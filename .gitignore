@@ -1,4 +1,8 @@
 **/std
 *.fits
 *.par
+*~
+__pycache__/
 
+**/masks
+**/output

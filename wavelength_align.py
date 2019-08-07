@@ -11,7 +11,6 @@ from astropy.io import fits
 import os
 
 def CRIRES_remove_bad_pix(filename):
-
     testdata = fits.open(filename)
     new_fname = filename[:-5] + "_clean.fits"
     
@@ -49,3 +48,7 @@ def CRIRES_remove_bad_pix(filename):
     testdata.writeto(new_fname)
 
 CRIRES_remove_bad_pix("test.fits")
+
+### grab a relevant telluric file for the whole dataset
+### apply wavelength correction and bad pixel to each CCD
+### save the file under a new name
