@@ -4,7 +4,7 @@ import glob
 
 ### delete calfiles
 
-folderlist = ["darks", "flats", "flatdarks"]
+folderlist = ["darks", "flats", "flatdarks", "masks", "output", "skycalc_temp"]
 
 for folder in folderlist:
     if path.exists(folder) == True:
@@ -16,6 +16,8 @@ for folder in folderlist:
 for f in glob.glob("std/crires*"):
     remove(f)
 
-remove("std/esorex.log")
-remove("std/input_std.txt")
+pipeline_tempfiles = ["std/esorex.log", "std/input_std.txt"]
 
+for ptemp in pipeline_tempfiles:
+    if path.exists(ptemp):
+        remove(ptemp)
