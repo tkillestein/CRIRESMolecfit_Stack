@@ -49,6 +49,3 @@ def CRIRES_remove_bad_pix(filename):
     testdata.writeto(new_fname)
 
 CRIRES_remove_bad_pix("test.fits")
-    
-
-def CRIRES_wavcalibrate()
