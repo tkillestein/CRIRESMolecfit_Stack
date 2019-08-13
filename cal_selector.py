@@ -55,7 +55,6 @@ def grab_calfiles():
 
     print("Querying ESO Archive")
     flat_table = handler.query_instrument("crires", column_filters={'stime':stime.value, 'etime':etime.value ,'dp_type':'FLAT', 'ins_wlen_cwlen':sci_wav})
-
     flat_header = handler.get_headers(flat_table["DP.ID"])
     mask = flat_header["HIERARCH ESO DET WINDOW NY"] != 512
     flat_table = flat_table[~mask]
@@ -69,11 +68,9 @@ def grab_calfiles():
         shutil.move(f, "flats")
 
     dark_table = handler.query_instrument("crires", column_filters={'stime':stime.value, 'etime':etime.value, 'dp_type':'DARK', 'exptime':sci_exp})
-
     dark_header = handler.get_headers(dark_table['DP.ID'])
     mask = dark_header["HIERARCH ESO DET WINDOW NY"] != 512
     dark_table = dark_table[~mask]
-
     dark_files = handler.retrieve_data(dark_table["DP.ID"])
 
     for d in dark_files:
@@ -84,7 +81,6 @@ def grab_calfiles():
     flatdark_header = handler.get_headers(flatdark_table["DP.ID"])
     mask = flatdark_header["HIERARCH ESO DET WINDOW NY"] != 512
     flatdark_table = flatdark_table[~mask]
-
     flatdark_files = handler.retrieve_data(flatdark_table["DP.ID"])
 
 

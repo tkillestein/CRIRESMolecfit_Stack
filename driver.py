@@ -17,4 +17,4 @@ for f in folders:
     calibrate_frames()
     os.chdir(BASEPATH)
 
-    print("Folder %s of %s complete" % (folders.index(f), len(f)))
+    print("Folder %s of %s complete" % (folders.index(f) + 1, len(folders)))
