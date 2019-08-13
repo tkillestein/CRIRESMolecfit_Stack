@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+# match frame windowing!
+
+
+
 #import numpy as np
 import glob, os, shutil
 #import matplotlib.pyplot as plt
