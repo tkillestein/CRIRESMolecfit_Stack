@@ -49,6 +49,7 @@ def grab_calfiles():
     sci_exp = header["EXPTIME"]
     stime = date - 12*u.hour
     etime = date + 18*u.hour
+    win_size = header["HIERARCH ESO DET WINDOW NY"]
 
     sci_wav = header["HIERARCH ESO INS WLEN CWLEN"]
     print(prop_ID, sci_wav, date)
@@ -56,7 +57,7 @@ def grab_calfiles():
     print("Querying ESO Archive")
     flat_table = handler.query_instrument("crires", column_filters={'stime':stime.value, 'etime':etime.value ,'dp_type':'FLAT', 'ins_wlen_cwlen':sci_wav})
     flat_header = handler.get_headers(flat_table["DP.ID"])
-    mask = flat_header["HIERARCH ESO DET WINDOW NY"] != 512
+    mask = flat_header["HIERARCH ESO DET WINDOW NY"] != win_size
     flat_table = flat_table[~mask]
 
     #### if flat_exp_time not all the same value, choose the highest one
@@ -69,7 +70,7 @@ def grab_calfiles():
 
     dark_table = handler.query_instrument("crires", column_filters={'stime':stime.value, 'etime':etime.value, 'dp_type':'DARK', 'exptime':sci_exp})
     dark_header = handler.get_headers(dark_table['DP.ID'])
-    mask = dark_header["HIERARCH ESO DET WINDOW NY"] != 512
+    mask = dark_header["HIERARCH ESO DET WINDOW NY"] != win_size
     dark_table = dark_table[~mask]
     dark_files = handler.retrieve_data(dark_table["DP.ID"])
 
@@ -79,7 +80,7 @@ def grab_calfiles():
     flatdark_table = handler.query_instrument("crires", column_filters={'stime':stime.value, 'etime':etime.value, 'dp_type':'DARK', 'exptime':flat_exp_time})
 
     flatdark_header = handler.get_headers(flatdark_table["DP.ID"])
-    mask = flatdark_header["HIERARCH ESO DET WINDOW NY"] != 512
+    mask = flatdark_header["HIERARCH ESO DET WINDOW NY"] != win_size
     flatdark_table = flatdark_table[~mask]
     flatdark_files = handler.retrieve_data(flatdark_table["DP.ID"])
 

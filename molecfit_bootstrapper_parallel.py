@@ -1,23 +1,8 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Aug  6 14:49:57 2019
-
-@author: phugxs
-"""
-
 import os, glob, subprocess
+from multiprocessing import Pool, cpu_count
 from astropy.io import fits
-
-### create masks folder
-    ### create fit range file automatically
-    ### create pixel mask file
-    ### create wavelength mask file
-
-### create molecfit config file
-    ### automatically plumb filepaths
-    ### possibly using a template
-
+import time
+import numpy as np
 
 
 def mkdir_safe(dirname):
@@ -28,16 +13,20 @@ def mkdir_safe(dirname):
     else:
         os.mkdir(dirname)
 
+proc_path = "20110414_proc"
 
-mkdir_safe("masks")
-mkdir_safe("output")
+folders = sorted(glob.glob(proc_path + "/*"))
+#print(folders)
 
-######## sort out the masks
+parent_path = os.getcwd()
 
-def molecfit_config(filename):
+def molecfit_run(f):
+    os.chdir(f)
+    current_path = os.getcwd()
 
-    ### Write standard CRIRES detector edgemasks
-    ### See molecfit tutorial
+    mkdir_safe("output")
+    mkdir_safe("masks")
+
     pixmask = open("masks/pixmask.txt", "w+")
     pixmask.write("0001 0020 \n")
     pixmask.write("1005 1044 \n")
@@ -46,9 +35,12 @@ def molecfit_config(filename):
     pixmask.write("4057 4096 \n")
     pixmask.close()
 
+    pix_path = os.path.join(current_path, "masks/pixmask.txt")
+
     wavmask = open("masks/wavmask.txt", "w+")
     wavmask.write(" ")
     wavmask.close()
+    wav_path = os.path.join(current_path, "masks/wavmask.txt")
 
     ### Write the fit range to file
     ### Use FITS header to get relevant wavelength ranges
@@ -58,9 +50,12 @@ def molecfit_config(filename):
 
     detchoice = ["1", "2", "3", "4"]
 
+    filename = glob.glob("*.fits")[0]
+    file_path = os.path.join(current_path, filename)
     frame = fits.open(filename)
 
     fitmask = open("masks/fitmask.txt", "w+")
+    fit_path = os.path.join(current_path, "masks/fitmask.txt")
 
     for det in detchoice:
         if det == "1":
@@ -80,27 +75,13 @@ def molecfit_config(filename):
             fitmask.write(str(wav[20]) + " " + str(wav[1020]) + "\n")
 
     fitmask.close()
+    frame.close()
 
-    #### Write the template parameter file
-    # Need to change:
-    #   path to each mask
-    #   path to the output dir
-    #   path to the input frame
-    #   choice of molecules.
-
-    parent_path = os.getcwd()
-    file_path = os.path.join(parent_path, filename)
-    pix_path = os.path.join(parent_path, "masks/pixmask.txt")
-    wav_path = os.path.join(parent_path, "masks/wavmask.txt")
-    fit_path = os.path.join(parent_path, "masks/fitmask.txt")
-    out_path = os.path.join(parent_path, "output")
-    data_path = os.path.join(parent_path, filename)
-
-
-    template = open("template.par", "r")
+    template = open(os.path.join(parent_path, "template.par"), "r")
     data = template.readlines()
     template.close()
 
+    out_path = os.path.join(current_path, "output")
 
     data[5] = "filename: " + str(file_path) + "\n"
     data[34] = "wrange_include: " + str(fit_path) + "\n"
@@ -109,19 +90,34 @@ def molecfit_config(filename):
     data[47] = "output_dir: " + str(out_path) + "\n"
     data[52] = "output_name: " + str(filename[:-5]) + "_out"  + "\n"
 
-    output = open("output.par", "w+")
+    output = open("output/output.par", "w+")
     output.writelines(data)
     output.close()
-    frame.close()
 
-    outfile_path = os.path.join(parent_path, "output.par")
+    outfile_path = os.path.join(current_path, "output/output.par")
+    print(outfile_path)
+    print("Starting molecfit call")
+    #os.system("molecfit " + str(outfile_path))
+    os.system("cd ~/mod_molecfit && ./bin/molecfit " + str(outfile_path))
 
-molecfit_config("test_clean.fits")
-print("Starting molecfit call")
-os.system("molecfit" + str(outfile_path))
-#os.popen("cd ~/molecfit && ./bin/molecfit " + str(outfile_path)).read()
+    os.chdir(parent_path)
 
-#### shell=True is insecure, be careful with outfile_path!
+tick = time.time()
 
-#with subprocess.Popen(["cd ~/molecfit && ./bin/molecfit " + str(outfile_path)], stdout=PIPE, shell=True) as proc:
-#    print(proc.stdout.read())
+THREAD_COUNT = cpu_count() - 2
+print("Spawning %s threads" % (THREAD_COUNT))
+### two summer students working on the cluster
+### give them a core each
+
+if __name__ == '__main__':
+    pool = Pool(THREAD_COUNT)
+    pool.map(molecfit_run, folders)
+
+pool.close()
+
+tock = time.time()
+timespent = np.round((tock - tick)/60)
+
+
+print("Time taken: %s mins with %d threads" % (timespent, THREAD_COUNT))
+print("%d spectra successfully processed!" % (len(folders)))
