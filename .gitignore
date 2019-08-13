@@ -6,3 +6,10 @@ __pycache__/
 
 **/masks
 **/output
+**/raw
+
+**/flats
+**/darks
+**/flatdarks
+
+!template.par
