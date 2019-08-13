@@ -13,6 +13,8 @@ print(folders)
 
 for f in folders:
     os.chdir(f)
-    #grab_calfiles()
+    grab_calfiles()
     calibrate_frames()
     os.chdir(BASEPATH)
+
+    print("Folder %s of %s complete" % (folders.index(f), len(f)))

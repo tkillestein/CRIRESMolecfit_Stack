@@ -7,6 +7,7 @@
 
 #import numpy as np
 import glob, os, shutil
+import numpy as np
 #import matplotlib.pyplot as plt
 from astroquery.eso import Eso
 from astropy.io import fits
@@ -46,31 +47,44 @@ def grab_calfiles():
     prop_ID = header["HIERARCH ESO OBS PROG ID"]
     date = Time(header["DATE-OBS"])
     sci_exp = header["EXPTIME"]
-    stime = date - 24*u.hour
-    etime = date + 24*u.hour
+    stime = date - 12*u.hour
+    etime = date + 18*u.hour
 
     sci_wav = header["HIERARCH ESO INS WLEN CWLEN"]
     print(prop_ID, sci_wav, date)
 
     print("Querying ESO Archive")
-    flat_table = handler.query_instrument("crires", column_filters={'prog_id':prop_ID, 'stime':stime.value, 'etime':etime.value ,'dp_type':'FLAT', 'ins_wlen_cwlen':sci_wav})
+    flat_table = handler.query_instrument("crires", column_filters={'stime':stime.value, 'etime':etime.value ,'dp_type':'FLAT', 'ins_wlen_cwlen':sci_wav})
 
-    #### if flat_exp_time not all the same value, choose only those with multiple flat frames
-    flat_exp_time = flat_table["EXPTIME"][0]
+    flat_header = handler.get_headers(flat_table["DP.ID"])
+    mask = flat_header["HIERARCH ESO DET WINDOW NY"] != 512
+    flat_table = flat_table[~mask]
 
+    #### if flat_exp_time not all the same value, choose the highest one
+    flat_exp_time = np.max(flat_table["EXPTIME"])
     flat_files = handler.retrieve_data(flat_table["DP.ID"])
     print(flat_files)
 
     for f in flat_files:
         shutil.move(f, "flats")
 
-    dark_table = handler.query_instrument("crires", column_filters={'prog_id':prop_ID, 'stime':stime.value, 'etime':etime.value, 'dp_type':'DARK', 'exptime':sci_exp})
+    dark_table = handler.query_instrument("crires", column_filters={'stime':stime.value, 'etime':etime.value, 'dp_type':'DARK', 'exptime':sci_exp})
+
+    dark_header = handler.get_headers(dark_table['DP.ID'])
+    mask = dark_header["HIERARCH ESO DET WINDOW NY"] != 512
+    dark_table = dark_table[~mask]
+
     dark_files = handler.retrieve_data(dark_table["DP.ID"])
 
     for d in dark_files:
         shutil.move(d, "darks")
 
-    flatdark_table = handler.query_instrument("crires", column_filters={'prog_id':prop_ID, 'stime':stime.value, 'etime':etime.value, 'dp_type':'DARK', 'exptime':flat_exp_time})
+    flatdark_table = handler.query_instrument("crires", column_filters={'stime':stime.value, 'etime':etime.value, 'dp_type':'DARK', 'exptime':flat_exp_time})
+
+    flatdark_header = handler.get_headers(flatdark_table["DP.ID"])
+    mask = flatdark_header["HIERARCH ESO DET WINDOW NY"] != 512
+    flatdark_table = flatdark_table[~mask]
+
     flatdark_files = handler.retrieve_data(flatdark_table["DP.ID"])
 
 
@@ -88,5 +102,5 @@ def grab_calfiles():
     os.chdir("../darks")
     os.system("uncompress *.Z")
 
+    os.chdir("../")
     print("Calibration selection complete!")
-    exit()
