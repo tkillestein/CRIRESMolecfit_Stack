@@ -62,15 +62,15 @@ def calibrate_frames():
 
     f = open("input_std.txt", "w+")
 
-    if os.path.isdir("../flats/crires_spec_flat_set03.fits") == True:
+    if os.path.isfile("../flats/crires_spec_flat_set03.fits") == True:
         flatpath = "../flats/crires_spec_flat_set03.fits"
         bpmpath = "../flats/crires_spec_flat_set03_bpm.fits"
 
-    elif os.path.isdir("../flats/crires_spec_flat_set02.fits") == True:
+    elif os.path.isfile("../flats/crires_spec_flat_set02.fits") == True:
         flatpath = "../flats/crires_spec_flat_set02.fits"
         bpmpath = "../flats/crires_spec_flat_set02_bpm.fits"
 
-    elif os.path.isdir("../flats/crires_spec_flat_set01.fits") == True:
+    elif os.path.isfile("../flats/crires_spec_flat_set01.fits") == True:
         flatpath = "../flats/crires_spec_flat_set01.fits"
         bpmpath = "../flats/crires_spec_flat_set01_bpm.fits"
 
@@ -81,10 +81,10 @@ def calibrate_frames():
     for fname in filelist:
         obs_type = return_frame_type(fname)
         f.write(str(fname) + " " + str(obs_type) + "\n")
-        f.write("../flats/crires_spec_flat_set01.fits" + " CALPRO_FLAT" + "\n")
-        f.write("../flats/crires_spec_flat_set01_bpm.fits" + " CALPRO_BPM" + "\n")
-        f.write("../darks/crires_spec_dark.fits" + " CALPRO_DARK" + "\n")
-        f.write("../../../calfiles/CR_PDCO_120123A_ALL.fits" + " COEFFS_CUBE" + "\n")
+    f.write("../flats/crires_spec_flat_set01.fits" + " CALPRO_FLAT" + "\n")
+    f.write("../flats/crires_spec_flat_set01_bpm.fits" + " CALPRO_BPM" + "\n")
+    f.write("../darks/crires_spec_dark.fits" + " CALPRO_DARK" + "\n")
+    f.write("../../../calfiles/CR_PDCO_120123A_ALL.fits" + " COEFFS_CUBE" + "\n")
     f.close()
 
 
