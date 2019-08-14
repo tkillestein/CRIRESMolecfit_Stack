@@ -8,5 +8,6 @@ __pycache__/
 /proc
 /raw
 /calfiles
+/fit_results
 
 !template.par
