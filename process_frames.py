@@ -22,6 +22,7 @@ for f in sorted(folders):
     calibrate_frames()
 
     ### Read FITS header from crires_spec_jitter_extracted.FITS
+
     temphdu = fits.open("obj/crires_spec_jitter_extracted.fits")
     header = temphdu[0].header
     temphdu.close()
@@ -38,10 +39,10 @@ for f in sorted(folders):
     print("Folder %s of %s complete" % (sorted(folders).index(f) + 1, len(folders)))
 
 #### Molecfit executed seperately to allow parallel processing - waits til all this is doneself.
-
+'''
 folders = sorted(glob.glob("proc/*"))
 
-THREAD_COUNT = cpu_count() - 2
+THREAD_COUNT = cpu_count() - 1
 print("Spawning %s threads" % (THREAD_COUNT))
 ### two summer students working on the cluster
 ### give them a core each
@@ -51,3 +52,4 @@ if __name__ == '__main__':
     pool.map(molecfit_run, folders)
 
 pool.close()
+'''
