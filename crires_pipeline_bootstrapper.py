@@ -74,6 +74,7 @@ def calibrate_frames():
 
     #### This is the call to run esorex on the resultant frames
     os.system("esorex crires_spec_jitter input_std.txt")
+    os.chdir("../")
 
     #### This block is here for when I chain all the scripts together, will prevent
     #### later steps trying to execute if the pipeline has failed
