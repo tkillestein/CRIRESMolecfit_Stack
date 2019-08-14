@@ -66,7 +66,7 @@ def grab_calfiles():
     print(flat_files)
 
     for f in flat_files:
-        shutil.move(f, "flats")
+        shutil.copy(f, "flats")
 
     dark_table = handler.query_instrument("crires", column_filters={'stime':stime.value, 'etime':etime.value, 'dp_type':'DARK', 'exptime':sci_exp})
     dark_header = handler.get_headers(dark_table['DP.ID'])
@@ -75,7 +75,7 @@ def grab_calfiles():
     dark_files = handler.retrieve_data(dark_table["DP.ID"])
 
     for d in dark_files:
-        shutil.move(d, "darks")
+        shutil.copy(d, "darks")
 
     flatdark_table = handler.query_instrument("crires", column_filters={'stime':stime.value, 'etime':etime.value, 'dp_type':'DARK', 'exptime':flat_exp_time})
 
@@ -86,7 +86,7 @@ def grab_calfiles():
 
 
     for d in flatdark_files:
-        shutil.move(d, "flatdarks")
+        shutil.copy(d, "flatdarks")
 
     print("Unpacking and moving!")
 
