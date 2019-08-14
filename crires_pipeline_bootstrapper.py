@@ -62,6 +62,22 @@ def calibrate_frames():
 
     f = open("input_std.txt", "w+")
 
+    if os.path.isdir("../flats/crires_spec_flat_set03.fits") == True:
+        flatpath = "../flats/crires_spec_flat_set03.fits"
+        bpmpath = "../flats/crires_spec_flat_set03_bpm.fits"
+
+    elif os.path.isdir("../flats/crires_spec_flat_set02.fits") == True:
+        flatpath = "../flats/crires_spec_flat_set02.fits"
+        bpmpath = "../flats/crires_spec_flat_set02_bpm.fits"
+
+    elif os.path.isdir("../flats/crires_spec_flat_set01.fits") == True:
+        flatpath = "../flats/crires_spec_flat_set01.fits"
+        bpmpath = "../flats/crires_spec_flat_set01_bpm.fits"
+
+    else:
+        raise Exception("Couldn't find a suitable flatfield and BPM - did esorex run properly?")
+
+
     for fname in filelist:
         obs_type = return_frame_type(fname)
         f.write(str(fname) + " " + str(obs_type) + "\n")
