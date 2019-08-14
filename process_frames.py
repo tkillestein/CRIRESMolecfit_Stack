@@ -15,10 +15,10 @@ BASEPATH = os.getcwd()
 folders = glob.glob("raw/*")
 print(folders)
 
-for f in folders:
+for f in sorted(folders):
     os.chdir(f)
-    #grab_calfiles()
-    #calibrate_frames()
+    grab_calfiles()
+    calibrate_frames()
 
     ### Read FITS header from crires_spec_jitter_extracted.FITS
     temphdu = fits.open("obj/crires_spec_jitter_extracted.fits")
