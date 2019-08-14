@@ -72,11 +72,11 @@ def lnprob(theta, initPos, cs_tell,spc):
     return lp + logL
 
 ''' Actual MCMC run with parameter estimation '''
-def run_emcee(initPos,initDeltas,cs_tell,spc,plot=True):
+def run_emcee(initPos,initDeltas,cs_tell,spc,plot=False):
     nPar = len(initPos)
     nWalkers = 20
     chainLen = 1000
-    nBurn = 200
+    nBurn = 500
     # Stuff for progress bar
     barW = 25
     n = 0
@@ -132,14 +132,14 @@ def wcal(filename, telluric_name):
         # Additional correction for hot pixels affecting RECT and OPT equally
         newmask = np.logical_or(spc > 2500, spc < 0)
         spc[newmask] = 'NaN'
-        plt.plot(spc)
-        plt.show()
+        #plt.plot(spc)
+        #plt.show()
         l1 = wlen[x1]
         l2 = wlen[x2]
         l3 = wlen[x3]
         pars = (l1,l2,l3)
         deltas = (1E-3,1E-3,1E-3)
-        ll1, ll2, ll3 = run_emcee(pars,deltas,cs_tell,spc,plot=True)
+        ll1, ll2, ll3 = run_emcee(pars,deltas,cs_tell,spc,plot=False)
         wlout = get_wl_sol(ll1,ll2,ll3)
         d['WAVELENGTH'] = wlout
         hdul[io+1].data = d
