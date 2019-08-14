@@ -34,7 +34,7 @@ for f in sorted(folders):
     shutil.copy("obj/crires_spec_jitter_extracted_proc.fits", proc_path + "/%s%s" % (f[4:], ".fits"))
 
     os.chdir(BASEPATH)
-    print("Folder %s of %s complete" % (folders.index(f) + 1, len(folders)))
+    print("Folder %s of %s complete" % (sorted(folders).index(f) + 1, len(folders)))
 
 #### Molecfit executed seperately to allow parallel processing - waits til all this is doneself.
 
