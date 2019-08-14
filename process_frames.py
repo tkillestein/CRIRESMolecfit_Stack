@@ -1,6 +1,7 @@
 import os, glob, shutil
 from astropy.io import fits
 import time
+from multiprocessing import Pool, cpu_count
 
 ### Stages of the pipeline.
 from cal_selector import grab_calfiles
@@ -38,7 +39,15 @@ for f in sorted(folders):
 
 #### Molecfit executed seperately to allow parallel processing - waits til all this is doneself.
 
-folders = glob.glob("proc/*")
+folders = sorted(glob.glob("proc/*"))
 
-for f in folders:
-    molecfit_run(f)
+THREAD_COUNT = cpu_count() - 2
+print("Spawning %s threads" % (THREAD_COUNT))
+### two summer students working on the cluster
+### give them a core each
+
+if __name__ == '__main__':
+    pool = Pool(THREAD_COUNT)
+    pool.map(molecfit_run, folders)
+
+pool.close()
