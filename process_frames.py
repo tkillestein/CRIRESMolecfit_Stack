@@ -29,7 +29,7 @@ for f in folders:
     ### Copy processed file to proc/
     proc_path = os.path.join(BASEPATH, "proc", f[4:])
     mkdir_safe(proc_path)
-    shutil.copy("obj/crires_spec_jitter_extracted.fits", proc_path + "/%s%s" % (f[4:], ".fits"))
+    shutil.copy("obj/crires_spec_jitter_extracted_proc.fits", proc_path + "/%s%s" % (f[4:], ".fits"))
 
     os.chdir(BASEPATH)
     print("Folder %s of %s complete" % (folders.index(f) + 1, len(folders)))
