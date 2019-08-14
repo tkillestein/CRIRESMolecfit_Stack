@@ -101,7 +101,7 @@ def molecfit_run(f):
     os.system("cd ~/mod_molecfit && ./bin/molecfit " + str(outfile_path))
 
     os.chdir(parent_path)
-
+'''
 tick = time.time()
 
 THREAD_COUNT = cpu_count() - 2
@@ -121,3 +121,4 @@ timespent = np.round((tock - tick)/60)
 
 print("Time taken: %s mins with %d threads" % (timespent, THREAD_COUNT))
 print("%d spectra successfully processed!" % (len(folders)))
+'''

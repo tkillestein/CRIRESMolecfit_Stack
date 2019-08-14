@@ -132,8 +132,6 @@ def wcal(filename, telluric_name):
         # Additional correction for hot pixels affecting RECT and OPT equally
         newmask = np.logical_or(spc > 2500, spc < 0)
         spc[newmask] = 'NaN'
-        # Additional correction for hot pixels affecting RECT and OPT equally
-        spc[spc > 4000] = 'NaN'
         plt.plot(spc)
         plt.show()
         l1 = wlen[x1]

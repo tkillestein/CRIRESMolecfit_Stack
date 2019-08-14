@@ -1,14 +1,16 @@
 import os, glob, shutil
 from astropy.io import fits
+import time
 
+### Stages of the pipeline.
 from cal_selector import grab_calfiles
 from crires_pipeline_bootstrapper import calibrate_frames
 from skycalc_handler import grab_tellurics
 from utils import mkdir_safe
 from wcal_code import wcal
-######## Handle calibration files
-BASEPATH = os.getcwd()
+from molecfit_bootstrapper_parallel import molecfit_run
 
+BASEPATH = os.getcwd()
 
 folders = glob.glob("raw/*")
 print(folders)
@@ -34,6 +36,9 @@ for f in folders:
     os.chdir(BASEPATH)
     print("Folder %s of %s complete" % (folders.index(f) + 1, len(folders)))
 
+#### Molecfit executed seperately to allow parallel processing - waits til all this is doneself.
 
-    #### Run telluric grabber for the spectrum
-    #### Add in wavelength calibration
+folders = glob.glob("proc/*")
+
+for f in folders:
+    molecfit_run(f)
