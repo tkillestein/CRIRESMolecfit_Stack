@@ -5,6 +5,7 @@ from cal_selector import grab_calfiles
 from crires_pipeline_bootstrapper import calibrate_frames
 from skycalc_handler import grab_tellurics
 from utils import mkdir_safe
+from wcal_code import wcal
 ######## Handle calibration files
 BASEPATH = os.getcwd()
 
@@ -24,7 +25,7 @@ for f in folders:
     ### Pass this to the telluric grabber
     grab_tellurics(header)
     ### Run wavelength alignment
-
+    wcal("obj/crires_spec_jitter_extracted.fits", "telluric_model.fits")
     ### Copy processed file to proc/
     proc_path = os.path.join(BASEPATH, "proc", f[4:])
     mkdir_safe(proc_path)

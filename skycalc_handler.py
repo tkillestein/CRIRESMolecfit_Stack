@@ -13,6 +13,7 @@ Created on Tue Aug  6 10:31:02 2019
 
 import os, glob
 from astropy.io import fits
+import numpy as np
 
 def grab_tellurics(fitsheader):
 
