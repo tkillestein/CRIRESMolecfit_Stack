@@ -81,8 +81,8 @@ def calibrate_frames():
     for fname in filelist:
         obs_type = return_frame_type(fname)
         f.write(str(fname) + " " + str(obs_type) + "\n")
-    f.write("../flats/crires_spec_flat_set01.fits" + " CALPRO_FLAT" + "\n")
-    f.write("../flats/crires_spec_flat_set01_bpm.fits" + " CALPRO_BPM" + "\n")
+    f.write(flatpath + " CALPRO_FLAT" + "\n")
+    f.write(bpmpath + " CALPRO_BPM" + "\n")
     f.write("../darks/crires_spec_dark.fits" + " CALPRO_DARK" + "\n")
     f.write("../../../calfiles/CR_PDCO_120123A_ALL.fits" + " COEFFS_CUBE" + "\n")
     f.close()
