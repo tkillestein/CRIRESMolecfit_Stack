@@ -115,10 +115,10 @@ cont_const: 500
 ## WAVELENGTH SOLUTION
 
 # Refinement of wavelength solution using a polynomial of degree wlc_n
-fit_wlc: 0
+fit_wlc: 1
 
 # Polynomial degree of the refined wavelength solution
-wlc_n: 0
+wlc_n: 2
 
 # Initial constant term for wavelength correction (shift relative to half
 # wavelength range)
