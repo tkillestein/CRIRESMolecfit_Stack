@@ -110,15 +110,15 @@ cont_n: 2
 
 # Initial constant term for continuum fit (valid for all fit ranges)
 # (emission spectrum: about 1 for correct flux_unit)
-cont_const: 2000.0
+cont_const: 500
 
 ## WAVELENGTH SOLUTION
 
 # Refinement of wavelength solution using a polynomial of degree wlc_n
-fit_wlc: 1
+fit_wlc: 0
 
 # Polynomial degree of the refined wavelength solution
-wlc_n: 2
+wlc_n: 0
 
 # Initial constant term for wavelength correction (shift relative to half
 # wavelength range)
@@ -149,7 +149,7 @@ fit_res_lorentz: 1
 res_lorentz: 0.5
 
 # Size of Gaussian/Lorentzian/Voigtian kernel in FWHM
-kernfac: 300.0
+kernfac: 700.0
 
 # Variable kernel (linear increase with wavelength)? -- 1 = yes; 0 = no
 varkern: 0

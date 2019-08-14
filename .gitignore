@@ -5,14 +5,8 @@
 *~
 __pycache__/
 
-**/masks
-**/output
-**/raw
-**/temp
-**/calfiles
-
-**/flats
-**/darks
-**/flatdarks
+/proc
+/raw
+/calfiles
 
 !template.par
