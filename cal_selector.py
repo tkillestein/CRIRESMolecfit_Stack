@@ -91,13 +91,13 @@ def grab_calfiles():
     print("Unpacking and moving!")
 
     os.chdir("flats")
-    os.system("uncompress *.Z")
+    os.system("pigz -d *.Z")
 
     os.chdir("../flatdarks")
-    os.system("uncompress *.Z")
+    os.system("pigz -d *.Z")
 
     os.chdir("../darks")
-    os.system("uncompress *.Z")
+    os.system("pigz -d *.Z")
 
     os.chdir("../")
     print("Calibration selection complete!")
