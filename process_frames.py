@@ -16,6 +16,7 @@ BASEPATH = os.getcwd()
 folders = glob.glob("raw/*")
 print(folders)
 
+
 for f in sorted(folders):
     os.chdir(f)
     grab_calfiles()
@@ -39,8 +40,9 @@ for f in sorted(folders):
     print("Folder %s of %s complete" % (sorted(folders).index(f) + 1, len(folders)))
 
 #### Molecfit executed seperately to allow parallel processing - waits til all this is doneself.
-'''
+
 folders = sorted(glob.glob("proc/*"))
+
 
 THREAD_COUNT = cpu_count() - 1
 print("Spawning %s threads" % (THREAD_COUNT))
@@ -52,4 +54,3 @@ if __name__ == '__main__':
     pool.map(molecfit_run, folders)
 
 pool.close()
-'''

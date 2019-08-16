@@ -9,5 +9,7 @@ __pycache__/
 /raw
 /calfiles
 /fit_results
+/fails
+*.txt
 
 !template.par
