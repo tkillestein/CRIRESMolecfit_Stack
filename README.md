@@ -10,12 +10,16 @@ When provided with a set of raw spectra, the code:
 ### Dependencies:
 
 #### molecfit
-molecfit/bin must be in PATH
-Utility scripts like `results_crawler.py` compatible with a modified molecfit code to give higher precision - contact me about this.
+Install from <https://www.eso.org/sci/software/pipelines/skytools/molecfit> - GUI isn't required for this code.
+For the scripting to work properly, add the INSTALL_DIR/bin directory to PATH.
+Utility scripts like `results_crawler.py` compatible with a modified molecfit code to give higher precision - contact me for more info.
 
-#### CRIRES pipeline
+#### CRIRES Pipeline
+Install from <http://www.eso.org/sci/software/pipelines/> - installing without `esoreflex` and `gasgano` is fine.
+Add the directory containing the `esorex` script to PATH also.
 
-#### Python dependencies 
+
+#### Python packages
 `astroquery` and `skycalc-cli`, install with your preferred method.
 
 #### pigz
