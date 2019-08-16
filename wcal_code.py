@@ -22,6 +22,7 @@ import time as tim
 import sys
 import emcee
 import corner
+from scipy.optimize import minimize
 
 def mycc(fVec,gVec):
     N, = fVec.shape
@@ -74,9 +75,9 @@ def lnprob(theta, initPos, cs_tell,spc):
 ''' Actual MCMC run with parameter estimation '''
 def run_emcee(initPos,initDeltas,cs_tell,spc,plot=False):
     nPar = len(initPos)
-    nWalkers = 40
-    chainLen = 800
-    nBurn = 400
+    nWalkers = 10
+    chainLen = 600
+    nBurn = 300
     # Stuff for progress bar
     barW = 25
     n = 0
@@ -144,16 +145,34 @@ def wcal(filename, telluric_name):
         pars = (l1,l2,l3)
         deltas = (1E-3,1E-3,1E-3)
 
-        N_iter = 3
+        print("Initialise grid search")
+        dim1 = np.linspace(l1 - 0.3, l1 + 0.3, 20)
+        dim2 = np.linspace(l2 - 0.3, l2 + 0.3, 20)
+        dim3 = np.linspace(l3 - 0.3, l3 + 0.3, 20)
+        chisq_cube = np.ones((len(dim1), len(dim2), len(dim3)))
+
+        for i in range(len(dim1)):
+            for j in range(len(dim2)):
+                for k in range(len(dim3)):
+                    theta = (dim1[i], dim2[j], dim3[k])
+                    chisq_cube[i][j][k] = get_logL(theta, cs_tell, spc)
+
+        tup = np.unravel_index(chisq_cube.argmax(), chisq_cube.shape)
+        i, j, k = tup
+
+        pars = (dim1[i], dim2[j], dim3[k])
+        N_iter = 2
+        print("MCMC running for %s iterations" % (N_iter))
         for i in range(N_iter):
             if i < N_iter-1:
                 ll1, ll2, ll3 = run_emcee(pars,deltas,cs_tell,spc,plot=False)
                 pars = ll1, ll2, ll3
+
             if i == N_iter-1:
                 ll1, ll2, ll3 = run_emcee(pars,deltas,cs_tell,spc,plot=True)
                 pars = ll1, ll2, ll3
 
-
+        print(pars)
         wlout = get_wl_sol(*pars)
         d['WAVELENGTH'] = wlout
         hdul[io+1].data = d
