@@ -75,8 +75,8 @@ def lnprob(theta, initPos, cs_tell,spc):
 def run_emcee(initPos,initDeltas,cs_tell,spc,plot=False):
     nPar = len(initPos)
     nWalkers = 20
-    chainLen = 1000
-    nBurn = 500
+    chainLen = 2000
+    nBurn = 1500
     # Stuff for progress bar
     barW = 25
     n = 0

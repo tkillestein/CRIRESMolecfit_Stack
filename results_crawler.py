@@ -64,7 +64,7 @@ for f in filelist:
         H2O_err.append(0.7)
 
 datablock = np.column_stack((obs_times, airmass, CH4_abun, CH4_err, H2O_abun, H2O_err))
-np.savetxt("20110401_58Aql.txt", datablock)
+np.savetxt("20110414_ThetaCrt.txt", datablock)
 
 plt.errorbar(obs_times[:len(H2O_abun)], H2O_abun, H2O_err, fmt='.k')
 plt.xlabel("MJD")
