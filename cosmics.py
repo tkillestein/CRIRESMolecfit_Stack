@@ -4,31 +4,33 @@ from astropy.io import fits
 from astropy.stats import median_absolute_deviation
 
 hdu = fits.open("000.fits")
-spec = hdu[4].data
-
+spec = hdu[1].data
 wav = spec["Wavelength"]
 flx = spec["EXTRACTED_OPT"]
-
 plt.plot(wav, flx)
 
+# Init new spectrum
 newspc = []
 
-for i in range(int(1024/16)):
-    a = i*16
-    b = (i+1)*16
+# Chunk size *MUST* be divisor of spectrum length.
+chunk_size = 16
+
+for i in range(int(len(wav)/chunk_size)):
+    a = i*chunk_size
+    b = (i+1)*chunk_size
+    ### Split the spectrum into 16 pixel chunks
     subwav = wav[a:b]
     subflx = flx[a:b]
+    # Compute the median and MAD (robust stdev) for each chunk
     median = np.nanmedian(subflx)
     sigma = median_absolute_deviation(subflx)
+    # Pixel more than 5 MAD away from the median get masked
     cleanmsk = np.logical_or(np.array(subflx) > 5*sigma + median, np.array(subflx) < 0)
-    print("Threshold: %s, Max: %s" % (2*sigma + median, np.max(subflx)))
-
-    for i in range(len(subflx)):
-        if cleanmsk[i] == True:
-            subflx[i] = 'NaN'
-
+    subflx[cleanmsk == True] = 'NaN'
+    #print("Threshold: %s, Max: %s" % (2*sigma + median, np.max(subflx)))
+    # Rebuild the spectrum chunk by chunk
     newspc.extend(subflx)
 
-
+# Check plot
 plt.plot(wav, np.array(newspc))
 plt.show()
