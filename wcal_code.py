@@ -107,7 +107,6 @@ def wcal(filename, telluric_name):
     fTel = tel['trans']
     wTel = tel['lam']*1E3
     cs_tell = interpolate.splrep(wTel,fTel,s=0.0)
-    #wlen = np.load('wlsol_01.npy')     # Guess wavelengths
     hdul = fits.open(filename)
     no = len(hdul) - 1
     nx = len(hdul[1].data)
