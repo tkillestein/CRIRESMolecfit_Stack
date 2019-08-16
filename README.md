@@ -1,4 +1,4 @@
-# PyCRIRES+molecfit pipeline
+# CRIRES/Molecfit Stack
 
 Code to automatically process and fit CRIRES spectra of telluric standard stars.
 When provided with a set of raw spectra, the code:
@@ -8,14 +8,18 @@ When provided with a set of raw spectra, the code:
 * Creates input files for and runs `molecfit` to determine column densities of greenhouse gases.
 
 ### Dependencies:
-molecfit
+
+#### molecfit
 molecfit/bin must be in PATH
-Utility scripts like `results_crawler.py` use a modified molecfit code to give higher precision - contact me about this.
+Utility scripts like `results_crawler.py` compatible with a modified molecfit code to give higher precision - contact me about this.
 
-CRIRES pipeline
+#### CRIRES pipeline
 
-* Python dependencies are `astroquery` and `skycalc-cli`, install with your preferred method.
+#### Python dependencies 
+`astroquery` and `skycalc-cli`, install with your preferred method.
 
+#### pigz
+Very helpful for speeding up the calibration selector stage, easily swapped by replacing `pigz -d *.Z` with `gzip -d *.Z` in `cal_selector.py`
 
 ### Running the code:
 
