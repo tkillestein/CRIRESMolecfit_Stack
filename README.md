@@ -9,14 +9,18 @@ When provided with a set of raw spectra, the code:
 
 ### Dependencies:
 molecfit
-molecfit/bin must be in fit_path
+molecfit/bin must be in PATH
+Utility scripts like `results_crawler.py` use a modified molecfit code to give higher precision - contact me about this.
 
 CRIRES pipeline
 
-astroquery
+* Python dependencies are `astroquery` and `skycalc-cli`, install with your preferred method.
 
-ESO skycalc
 
-numpy and astropy
+### Running the code:
 
-### Installing:
+* Under `raw/`, create a folder for each observation block - each block should be same exposure time, wavelength
+* Inside each observation block directory, put the raw frames to be processed in a subdirectory `obj/`
+* From the top-level directory run `python process_frames.py`
+* Currently, the calibration frame grabber, pipeline bootstrapper, and wavelength calibration routines run in sequence on each folder, then molecfit runs across N-1 cores.
+
