@@ -28,7 +28,7 @@ def cosmic_filter(wav, flx):
         median = np.nanmedian(subflx)
         sigma = median_absolute_deviation(subflx)
         # Pixel more than 5 MAD away from the median get masked
-        cleanmsk = np.logical_or(np.array(subflx) > 5*sigma + median, np.array(subflx) < 0)
+        cleanmsk = np.logical_or(np.array(subflx) > 5*sigma + median, np.array(subflx) < median - 5*sigma)
         subflx[cleanmsk == True] = 'NaN' #np.median(subflx[cleanmsk == False])
         #print("Threshold: %s, Max: %s" % (2*sigma + median, np.max(subflx)))
         # Rebuild the spectrum chunk by chunk

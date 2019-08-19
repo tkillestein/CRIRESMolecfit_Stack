@@ -125,12 +125,14 @@ def wcal(filename, telluric_name):
         # Identify and mask bad pixels
         spc = d['Extracted_OPT']
         spc = cosmic_filter(wlen, spc)
+        '''
         plt.figure(figsize=(12,3), dpi=120)
         plt.title("Before")
         plt.plot(wlen, spc, c='r', label="input_spectrum")
         plt.plot(wTel, fTel*np.nanpercentile(spc, 70), c='k', label="telluric_model")
         plt.xlim(wlen[0], wlen[-1])
         plt.show()
+        '''
         l1 = wlen[x1]
         l2 = wlen[x2]
         l3 = wlen[x3]
@@ -163,13 +165,14 @@ def wcal(filename, telluric_name):
         wlout = get_wl_sol(*pars)
         d['WAVELENGTH'] = wlout
         hdul[io+1].data = d
+        '''
         plt.figure(figsize=(12,3), dpi=120)
         plt.title("After")
         plt.plot(wlout, spc, c='r', label="input_spectrum")
         plt.plot(wTel, fTel*np.nanpercentile(spc, 70), c='k', label="telluric_model")
         plt.xlim(wlen[0], wlen[-1])
         plt.show()
-
+        '''
     out_file = filename[:-5] + "_proc.fits"
     hdul.writeto(out_file,overwrite=True)
     return
