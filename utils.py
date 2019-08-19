@@ -17,7 +17,7 @@ def cosmic_filter(wav, flx):
     newspc = []
 
     # Chunk size *MUST* be divisor of spectrum length.
-    chunk_size = 32
+    chunk_size = 16
 
     for i in range(int(len(wav)/chunk_size)):
         a = i*chunk_size
