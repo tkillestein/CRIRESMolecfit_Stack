@@ -106,7 +106,7 @@ telback: 0.1
 fit_cont: 1
 
 # Degree of coefficients for continuum fit
-cont_n: 2
+cont_n: 3
 
 # Initial constant term for continuum fit (valid for all fit ranges)
 # (emission spectrum: about 1 for correct flux_unit)
@@ -115,10 +115,10 @@ cont_const: 300
 ## WAVELENGTH SOLUTION
 
 # Refinement of wavelength solution using a polynomial of degree wlc_n
-fit_wlc: 1
+fit_wlc: 0
 
 # Polynomial degree of the refined wavelength solution
-wlc_n: 2
+wlc_n: 0
 
 # Initial constant term for wavelength correction (shift relative to half
 # wavelength range)
@@ -140,7 +140,7 @@ kernmode: 1
 fit_res_gauss: 1
 
 # Initial value for FWHM of Gaussian in pixels
-res_gauss: 2.0
+res_gauss: 1.5
 
 # Fit resolution by Lorentzian -- 1 = yes; 0 = no
 fit_res_lorentz: 1

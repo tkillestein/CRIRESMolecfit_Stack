@@ -90,7 +90,7 @@ def molecfit_run(f):
     data[42] = "prange_exclude: " + str(pix_path) + "\n"
     data[47] = "output_dir: " + str(out_path) + "\n"
     data[52] = "output_name: " + str(filename[:-5]) + "_out"  + "\n"
-    data[114] = "cont_const: %s\n" % (500)
+    data[114] = "cont_const: %s\n" % (meanflux)
 
     output = open("output/output.par", "w+")
     output.writelines(data)
