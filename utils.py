@@ -12,12 +12,12 @@ def mkdir_safe(dirname):
 
 
 
-def cosmic_filter(flx):
+def cosmic_filter(wav, flx):
 # Init new spectrum
     newspc = []
 
     # Chunk size *MUST* be divisor of spectrum length.
-    chunk_size = 8
+    chunk_size = 32
 
     for i in range(int(len(wav)/chunk_size)):
         a = i*chunk_size
@@ -33,4 +33,4 @@ def cosmic_filter(flx):
         #print("Threshold: %s, Max: %s" % (2*sigma + median, np.max(subflx)))
         # Rebuild the spectrum chunk by chunk
         newspc.extend(subflx)
-    return newspc
+    return np.array(newspc)

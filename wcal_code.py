@@ -23,6 +23,7 @@ import sys
 import emcee
 import corner
 from scipy.optimize import minimize
+from utils import cosmic_filter
 
 def mycc(fVec,gVec):
     N, = fVec.shape
@@ -123,16 +124,7 @@ def wcal(filename, telluric_name):
         wlen = d['Wavelength']
         # Identify and mask bad pixels
         spc = d['Extracted_OPT']
-        spcRect = d['Extracted_RECT']
-        iok = np.isfinite(spc) * np.isfinite(spcRect)
-        rat = np.zeros(1024)
-        rat[iok] = spc[iok] / spcRect[iok] - 1
-        rat[iok == False] = 'NaN'
-        spc[np.isfinite(rat) == False] = 'NaN'
-        spc[np.abs(rat) > 0.1] = 'NaN'
-        # Additional correction for hot pixels affecting RECT and OPT equally
-        newmask = np.logical_or(spc > 2500, spc < 0)
-        spc[newmask] = 'NaN'
+        spc = cosmic_filter(wlen, spc)
         plt.figure(figsize=(12,3), dpi=120)
         plt.title("Before")
         plt.plot(wlen, spc, c='r', label="input_spectrum")
@@ -146,9 +138,9 @@ def wcal(filename, telluric_name):
         deltas = (1E-3,1E-3,1E-3)
 
         print("Initialise grid search")
-        dim1 = np.linspace(l1 - 0.3, l1 + 0.3, 20)
-        dim2 = np.linspace(l2 - 0.3, l2 + 0.3, 20)
-        dim3 = np.linspace(l3 - 0.3, l3 + 0.3, 20)
+        dim1 = np.linspace(l1 - 0.25, l1 + 0.25, 30)
+        dim2 = np.linspace(l2 - 0.25, l2 + 0.25, 30)
+        dim3 = np.linspace(l3 - 0.25, l3 + 0.25, 30)
         chisq_cube = np.ones((len(dim1), len(dim2), len(dim3)))
 
         for i in range(len(dim1)):
@@ -161,16 +153,11 @@ def wcal(filename, telluric_name):
         i, j, k = tup
 
         pars = (dim1[i], dim2[j], dim3[k])
-        N_iter = 2
-        print("MCMC running for %s iterations" % (N_iter))
-        for i in range(N_iter):
-            if i < N_iter-1:
-                ll1, ll2, ll3 = run_emcee(pars,deltas,cs_tell,spc,plot=False)
-                pars = ll1, ll2, ll3
 
-            if i == N_iter-1:
-                ll1, ll2, ll3 = run_emcee(pars,deltas,cs_tell,spc,plot=True)
-                pars = ll1, ll2, ll3
+        print("MCMC running: init")
+        for i in range(3):
+            ll1, ll2, ll3 = run_emcee(pars,deltas,cs_tell,spc,plot=False)
+            pars = ll1, ll2, ll3
 
         print(pars)
         wlout = get_wl_sol(*pars)

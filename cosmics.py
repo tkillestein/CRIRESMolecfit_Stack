@@ -11,8 +11,6 @@ wav = spec["Wavelength"]
 flx = spec["EXTRACTED_OPT"]
 plt.plot(wav, flx)
 
-
-
 def cosmic_filter(flx):
 # Init new spectrum
     newspc = []
