@@ -1,23 +1,22 @@
-import os, glob
 import numpy as np
+import matplotlib.pyplot as plt
+from astropy.io import fits
 from astropy.stats import median_absolute_deviation
 
-def mkdir_safe(dirname):
-    if os.path.isdir(dirname) == True:
-        flist = glob.glob(dirname + "/*")
-        for f in flist:
-            os.remove(f)
-    else:
-        os.mkdir(dirname)
+### Move this to utils?
 
+hdu = fits.open("000.fits")
+spec = hdu[1].data
+wav = spec["Wavelength"]
+flx = spec["EXTRACTED_OPT"]
+plt.plot(wav, flx)
 
-
-def cosmic_filter(wav, flx):
+def cosmic_filter(flx):
 # Init new spectrum
     newspc = []
 
     # Chunk size *MUST* be divisor of spectrum length.
-    chunk_size = 32
+    chunk_size = 8
 
     for i in range(int(len(wav)/chunk_size)):
         a = i*chunk_size
@@ -28,9 +27,14 @@ def cosmic_filter(wav, flx):
         median = np.nanmedian(subflx)
         sigma = median_absolute_deviation(subflx)
         # Pixel more than 5 MAD away from the median get masked
-        cleanmsk = np.logical_or(np.array(subflx) > 5*sigma + median, np.array(subflx) < median - 5*sigma)
+        cleanmsk = np.logical_or(np.array(subflx) > 5*sigma + median, np.array(subflx) < 0)
         subflx[cleanmsk == True] = 'NaN' #np.median(subflx[cleanmsk == False])
         #print("Threshold: %s, Max: %s" % (2*sigma + median, np.max(subflx)))
         # Rebuild the spectrum chunk by chunk
         newspc.extend(subflx)
-    return np.array(newspc)
+    return newspc
+
+newspc = cosmic_filter(flx)
+# Check plot
+plt.plot(wav, np.array(newspc))
+plt.show()

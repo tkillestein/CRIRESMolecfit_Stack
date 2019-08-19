@@ -56,6 +56,7 @@ def molecfit_run(f):
 
     fitmask = open("masks/fitmask.txt", "w+")
     fit_path = os.path.join(current_path, "masks/fitmask.txt")
+    meanflux = np.median(frame[2].data["Extracted_OPT"])
 
     for det in detchoice:
         if det == "1":
@@ -89,6 +90,7 @@ def molecfit_run(f):
     data[42] = "prange_exclude: " + str(pix_path) + "\n"
     data[47] = "output_dir: " + str(out_path) + "\n"
     data[52] = "output_name: " + str(filename[:-5]) + "_out"  + "\n"
+    data[114] = "cont_const: %s\n" % (meanflux)
 
     output = open("output/output.par", "w+")
     output.writelines(data)

@@ -10,7 +10,7 @@ from skycalc_handler import grab_tellurics
 from utils import mkdir_safe
 from wcal_code import wcal
 from molecfit_bootstrapper_parallel import molecfit_run
-
+'''
 BASEPATH = os.getcwd()
 
 folders = glob.glob("raw/*")
@@ -40,7 +40,7 @@ for f in sorted(folders):
     print("Folder %s of %s complete" % (sorted(folders).index(f) + 1, len(folders)))
 
 #### Molecfit executed seperately to allow parallel processing - waits til all this is doneself.
-
+'''
 folders = sorted(glob.glob("proc/*"))
 
 

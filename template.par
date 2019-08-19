@@ -110,7 +110,7 @@ cont_n: 2
 
 # Initial constant term for continuum fit (valid for all fit ranges)
 # (emission spectrum: about 1 for correct flux_unit)
-cont_const: 500
+cont_const: 300
 
 ## WAVELENGTH SOLUTION
 

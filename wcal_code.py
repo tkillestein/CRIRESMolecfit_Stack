@@ -22,6 +22,8 @@ import time as tim
 import sys
 import emcee
 import corner
+from scipy.optimize import minimize
+from utils import cosmic_filter
 
 def mycc(fVec,gVec):
     N, = fVec.shape
@@ -60,7 +62,7 @@ def get_logL(theta,cs_tell,spc):
 def lnprior(theta, initPos):
     L1, L2, L3 = theta
     L01, L02, L03 = initPos
-    if L01-1.5 < L1 < L01+1.5 and L02-1.5 < L2 < L02+1.5 and L03-1.5 < L3 < L03+1.5: return 0.0
+    if L01-2 < L1 < L01+2 and L02-2 < L2 < L02+2 and L03-2 < L3 < L03+2: return 0.0
     return -np.Inf
 
 ''' Likelihood computation '''
@@ -74,9 +76,9 @@ def lnprob(theta, initPos, cs_tell,spc):
 ''' Actual MCMC run with parameter estimation '''
 def run_emcee(initPos,initDeltas,cs_tell,spc,plot=False):
     nPar = len(initPos)
-    nWalkers = 20
-    chainLen = 2000
-    nBurn = 1500
+    nWalkers = 10
+    chainLen = 600
+    nBurn = 300
     # Stuff for progress bar
     barW = 25
     n = 0
@@ -107,14 +109,14 @@ def wcal(filename, telluric_name):
     fTel = tel['trans']
     wTel = tel['lam']*1E3
     cs_tell = interpolate.splrep(wTel,fTel,s=0.0)
-    wlen = np.load('../../wlsol_01.npy')     # Guess wavelengths
-    no, nx = wlen.shape
+    hdul = fits.open(filename)
+    no = len(hdul) - 1
+    nx = len(hdul[1].data)
     # Set starting parameters
     x1 = 255
     x2 = 511
     x3 = 767
     # Initialise vectors
-    hdul = fits.open(filename)
     for io in range(no):
         print('Processing detector {:1}'.format(io+1))
         wlout = np.zeros(nx)
@@ -122,28 +124,55 @@ def wcal(filename, telluric_name):
         wlen = d['Wavelength']
         # Identify and mask bad pixels
         spc = d['Extracted_OPT']
-        spcRect = d['Extracted_RECT']
-        iok = np.isfinite(spc) * np.isfinite(spcRect)
-        rat = np.zeros(1024)
-        rat[iok] = spc[iok] / spcRect[iok] - 1
-        rat[iok == False] = 'NaN'
-        spc[np.isfinite(rat) == False] = 'NaN'
-        spc[np.abs(rat) > 0.1] = 'NaN'
-        # Additional correction for hot pixels affecting RECT and OPT equally
-        newmask = np.logical_or(spc > 2500, spc < 0)
-        spc[newmask] = 'NaN'
-        #plt.plot(spc)
-        #plt.show()
+        spc = cosmic_filter(wlen, spc)
+        '''
+        plt.figure(figsize=(12,3), dpi=120)
+        plt.title("Before")
+        plt.plot(wlen, spc, c='r', label="input_spectrum")
+        plt.plot(wTel, fTel*np.nanpercentile(spc, 70), c='k', label="telluric_model")
+        plt.xlim(wlen[0], wlen[-1])
+        plt.show()
+        '''
         l1 = wlen[x1]
         l2 = wlen[x2]
         l3 = wlen[x3]
         pars = (l1,l2,l3)
         deltas = (1E-3,1E-3,1E-3)
-        ll1, ll2, ll3 = run_emcee(pars,deltas,cs_tell,spc,plot=False)
-        wlout = get_wl_sol(ll1,ll2,ll3)
+
+        print("Initialise grid search")
+        dim1 = np.linspace(l1 - 0.25, l1 + 0.25, 30)
+        dim2 = np.linspace(l2 - 0.25, l2 + 0.25, 30)
+        dim3 = np.linspace(l3 - 0.25, l3 + 0.25, 30)
+        chisq_cube = np.ones((len(dim1), len(dim2), len(dim3)))
+
+        for i in range(len(dim1)):
+            for j in range(len(dim2)):
+                for k in range(len(dim3)):
+                    theta = (dim1[i], dim2[j], dim3[k])
+                    chisq_cube[i][j][k] = get_logL(theta, cs_tell, spc)
+
+        tup = np.unravel_index(chisq_cube.argmax(), chisq_cube.shape)
+        i, j, k = tup
+
+        pars = (dim1[i], dim2[j], dim3[k])
+
+        print("MCMC running: init")
+        for i in range(3):
+            ll1, ll2, ll3 = run_emcee(pars,deltas,cs_tell,spc,plot=False)
+            pars = ll1, ll2, ll3
+
+        print(pars)
+        wlout = get_wl_sol(*pars)
         d['WAVELENGTH'] = wlout
         hdul[io+1].data = d
-
+        '''
+        plt.figure(figsize=(12,3), dpi=120)
+        plt.title("After")
+        plt.plot(wlout, spc, c='r', label="input_spectrum")
+        plt.plot(wTel, fTel*np.nanpercentile(spc, 70), c='k', label="telluric_model")
+        plt.xlim(wlen[0], wlen[-1])
+        plt.show()
+        '''
     out_file = filename[:-5] + "_proc.fits"
     hdul.writeto(out_file,overwrite=True)
     return
