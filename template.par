@@ -75,14 +75,14 @@ xtol: 1e-06
 
 # List of molecules to be included in the model
 # (default: 'H2O', N_val: nmolec)
-list_molec: H2O CO2 CH4
+list_molec: H2O CO2 CH4 N2O
 
 # Fit flags for molecules -- 1 = yes; 0 = no (N_val: nmolec)
-fit_molec: 1 0 1
+fit_molec: 1 0 1 0
 
 # Values of molecular columns, expressed relatively to the input ATM profile
 # columns (N_val: nmolec) [1 = 100%]
-relcol: 1.0 1.0 1.0
+relcol: 1.0 1.0 1.0 1.0
 
 ## BACKGROUND AND CONTINUUM
 
