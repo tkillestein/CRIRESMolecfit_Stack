@@ -47,12 +47,12 @@ def grab_calfiles():
     prop_ID = header["HIERARCH ESO OBS PROG ID"]
     date = Time(header["DATE-OBS"])
     sci_exp = header["EXPTIME"]
-    stime = date - 12*u.hour
-    etime = date + 18*u.hour
+    stime = date - 10*u.hour
+    etime = date + 10*u.hour
     win_size = header["HIERARCH ESO DET WINDOW NY"]
 
     sci_wav = header["HIERARCH ESO INS WLEN CWLEN"]
-    print(prop_ID, sci_wav, date)
+    print(filelist[0], sci_wav, date)
 
     print("Querying ESO Archive")
     flat_table = handler.query_instrument("crires", column_filters={'stime':stime.value, 'etime':etime.value ,'dp_type':'FLAT', 'ins_wlen_cwlen':sci_wav})
