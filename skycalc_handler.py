@@ -1,16 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Aug  6 10:31:02 2019
-
-@author: phugxs
-"""
-
-#### make a temp directory
-#### create a fully populated skycalc input and almanac field
-#### run skycalc-cli and obtain output fits file for each detector
-
-
 import os, glob
 from astropy.io import fits
 import numpy as np

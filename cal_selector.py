@@ -1,10 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-
-# match frame windowing!
-
-
-
 #import numpy as np
 import glob, os, shutil
 import numpy as np
@@ -35,25 +28,23 @@ def grab_calfiles():
     mkdir_safe("flatdarks")
     mkdir_safe("darks")
 
-
-    ##### Password requested here
-
     # Read the first FITS in the folder
     filelist = glob.glob("obj/*.fits")
     temphdu = fits.open(filelist[0])
     header = temphdu[0].header
     print("FITS header loaded")
 
+    # Extract relevant query params from science frame
     prop_ID = header["HIERARCH ESO OBS PROG ID"]
     date = Time(header["DATE-OBS"])
     sci_exp = header["EXPTIME"]
-    stime = date - 10*u.hour
-    etime = date + 10*u.hour
+    stime = date - 12*u.hour
+    etime = date + 12*u.hour
     win_size = header["HIERARCH ESO DET WINDOW NY"]
-
     sci_wav = header["HIERARCH ESO INS WLEN CWLEN"]
-    print(filelist[0], sci_wav, date)
+    #print(filelist[0], sci_wav, date)
 
+    # Query flat frames - check they match
     print("Querying ESO Archive")
     flat_table = handler.query_instrument("crires", column_filters={'stime':stime.value, 'etime':etime.value ,'dp_type':'FLAT', 'ins_wlen_cwlen':sci_wav})
     flat_header = handler.get_headers(flat_table["DP.ID"])
@@ -61,13 +52,15 @@ def grab_calfiles():
     flat_table = flat_table[~mask]
 
     #### if flat_exp_time not all the same value, choose the highest one
+    #### Download flat fields
     flat_exp_time = np.max(flat_table["EXPTIME"])
     flat_files = handler.retrieve_data(flat_table["DP.ID"])
-    print(flat_files)
+    #print(flat_files)
 
     for f in flat_files:
         shutil.copy(f, "flats")
 
+    #### Grab the dark frames matching the science exposure time
     dark_table = handler.query_instrument("crires", column_filters={'stime':stime.value, 'etime':etime.value, 'dp_type':'DARK', 'exptime':sci_exp})
     dark_header = handler.get_headers(dark_table['DP.ID'])
     mask = dark_header["HIERARCH ESO DET WINDOW NY"] != win_size
@@ -77,19 +70,19 @@ def grab_calfiles():
     for d in dark_files:
         shutil.copy(d, "darks")
 
+    #### Grab darks matched to flat fields
     flatdark_table = handler.query_instrument("crires", column_filters={'stime':stime.value, 'etime':etime.value, 'dp_type':'DARK', 'exptime':flat_exp_time})
-
     flatdark_header = handler.get_headers(flatdark_table["DP.ID"])
     mask = flatdark_header["HIERARCH ESO DET WINDOW NY"] != win_size
     flatdark_table = flatdark_table[~mask]
     flatdark_files = handler.retrieve_data(flatdark_table["DP.ID"])
-
 
     for d in flatdark_files:
         shutil.copy(d, "flatdarks")
 
     print("Unpacking and moving!")
 
+    ### Unpack all the files -- swap pigz for gzip if you don't have it.
     os.chdir("flats")
     os.system("pigz -d *.Z")
 

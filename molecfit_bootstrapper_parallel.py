@@ -3,15 +3,7 @@ from multiprocessing import Pool, cpu_count
 from astropy.io import fits
 import time
 import numpy as np
-
-
-def mkdir_safe(dirname):
-    if os.path.isdir(dirname) == True:
-        flist = glob.glob(dirname + "/*")
-        for f in flist:
-            os.remove(f)
-    else:
-        os.mkdir(dirname)
+from utils import mkdir_safe
 
 proc_path = "20110414_proc"
 
@@ -21,12 +13,14 @@ folders = sorted(glob.glob(proc_path + "/*"))
 parent_path = os.getcwd()
 
 def molecfit_run(f):
+    #### f is a directory output by the previous stages of the script
     os.chdir(f)
     current_path = os.getcwd()
 
     mkdir_safe("output")
     mkdir_safe("masks")
 
+    #### Write out the pixel masks
     pixmask = open("masks/pixmask.txt", "w+")
     pixmask.write("0001 0020 \n")
     pixmask.write("1005 1044 \n")
@@ -37,16 +31,11 @@ def molecfit_run(f):
 
     pix_path = os.path.join(current_path, "masks/pixmask.txt")
 
+    #### Make a wavelength mask file.
     wavmask = open("masks/wavmask.txt", "w+")
     wavmask.write(" ")
     wavmask.close()
     wav_path = os.path.join(current_path, "masks/wavmask.txt")
-
-    ### Write the fit range to file
-    ### Use FITS header to get relevant wavelength ranges
-
-    #detectors = input("Which detector(s)? \nType numbers with no spaces between \n")
-    #detchoice = list(set(list(detectors)))
 
     detchoice = ["1", "2", "3", "4"]
 
@@ -54,8 +43,12 @@ def molecfit_run(f):
     file_path = os.path.join(current_path, filename)
     frame = fits.open(filename)
 
+    #### Write out the fit ranges for each detector
     fitmask = open("masks/fitmask.txt", "w+")
     fit_path = os.path.join(current_path, "masks/fitmask.txt")
+
+    #### This line sets the offset term for molecfit, it is intended to sit
+    #### above the spectrum since molecfit seems to fit nicely with this.
     meanflux = 1.2*np.nanpercentile(frame[2].data["Extracted_OPT"], 90)
 
     for det in detchoice:
@@ -78,12 +71,14 @@ def molecfit_run(f):
     fitmask.close()
     frame.close()
 
+
+    #### Read in the template file
     template = open(os.path.join(parent_path, "template.par"), "r")
     data = template.readlines()
     template.close()
 
+    #### Write a modified template file to output.par
     out_path = os.path.join(current_path, "output")
-
     data[5] = "filename: " + str(file_path) + "\n"
     data[34] = "wrange_include: " + str(fit_path) + "\n"
     data[38] = "wrange_exclude: " + str(wav_path) + "\n"
@@ -96,13 +91,16 @@ def molecfit_run(f):
     output.writelines(data)
     output.close()
 
+    #### Call molecfit executable on output file generated.
     outfile_path = os.path.join(current_path, "output/output.par")
-    print(outfile_path)
+    #print(outfile_path)
     print("Starting molecfit call")
-    #os.system("molecfit " + str(outfile_path))
     os.system("cd ~/mod_molecfit && ./bin/molecfit " + str(outfile_path))
 
+    #### chdir back to the starting path ready to run again
     os.chdir(parent_path)
+
+### This code left here as example on how to invoke multiprocessing
 '''
 tick = time.time()
 

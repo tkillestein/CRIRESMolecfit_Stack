@@ -11,18 +11,15 @@ def mkdir_safe(dirname):
         os.mkdir(dirname)
 
 
-
 def cosmic_filter(wav, flx):
-# Init new spectrum
     newspc = []
-
     # Chunk size *MUST* be divisor of spectrum length.
     chunk_size = 16
 
     for i in range(int(len(wav)/chunk_size)):
         a = i*chunk_size
         b = (i+1)*chunk_size
-        ### Split the spectrum into 16 pixel chunks
+        ### Split the spectrum into (chunk_size) pixel chunks
         subflx = flx[a:b]
         # Compute the median and MAD (robust stdev) for each chunk
         median = np.nanmedian(subflx)
