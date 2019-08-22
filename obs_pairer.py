@@ -3,7 +3,6 @@ import numpy as np
 from astropy.io import fits
 from astropy.table import Table
 from astropy.time import Time
-from utils import mkdir_safe
 
 FILEPATH = "/storage/astro2/phugxs/crires_downloads/2012"
 NEWPATH = "/storage/astro2/phugxs/crires_processed/2012"
@@ -18,11 +17,11 @@ names = []
 nods = []
 wavs = []
 
-for f in sorted(filelist):
+for f in filelist:
     temphdu = fits.open(f)
     head = temphdu[0].header
     temphdu.close()
-    date = head['Date']
+    date = head['DATE-OBS']
     obj = head['HIERARCH ESO OBS TARG NAME']
     nodstat = head['HIERARCH ESO SEQ NODPOS']
     wav = head['HIERARCH ESO INS WLEN CWLEN']
@@ -36,7 +35,7 @@ frametable = Table([filelist, dates, names, nods, wavs], names=('flist', 'date',
 
 unique_tgts = list(set(names))
 
-for u in unique_tgts[:2]:
+for u in unique_tgts:
     print("##### %s ######" % u)
     subset = frametable[frametable['obj'] == u]
     unique_wavs = list(set(list(subset['wave'])))
@@ -54,7 +53,7 @@ for u in unique_tgts[:2]:
         else:
             for i in range(len(As)):
                 date = Time(As[i]['date'], out_subfmt='date')
-                folderpath = "/%s_%snm_%s_set%s/obj" % (u, int(w), date, i)
+                folderpath = "/%s_%s_%su_set%s/obj" % (date, u, int(w)/1000, i+1)
                 basepath = NEWPATH + folderpath
 
                 if not os.path.exists(basepath):
