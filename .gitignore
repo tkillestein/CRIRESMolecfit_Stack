@@ -13,3 +13,4 @@ __pycache__/
 *.txt
 .nfs*
 !template.par
+crires_fulldb.csv

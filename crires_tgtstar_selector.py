@@ -75,8 +75,12 @@ def spectral_type_cut(entry):
         return False
 
 typemask = [spectral_type_cut(x) for x in spectype]
+varmask = [not x for x in varstat]
 
-new_subset = cat_subset[typemask]
+### Needs to be both not variable and not a GKM/whatever else star
+totalmask = np.logical_and(typemask, varmask)
+
+new_subset = cat_subset[totalmask]
 print("Filter by spectral_type: %s of %s targets remain" % (np.sum(typemask), len(initmask)))
 
 science_frames = new_subset["DP.ID"]
