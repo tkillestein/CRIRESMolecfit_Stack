@@ -18,7 +18,7 @@ def median_filter(flx, chunk_size, coldpix):
     if len(flx) % chunk_size != 0:
         raise("Chunk size not factor of spectrum length")
 
-    for i in range(int(len(wav)/chunk_size)):
+    for i in range(int(len(flx)/chunk_size)):
         a = i*chunk_size
         b = (i+1)*chunk_size
         ### Split the spectrum into 16 pixel chunks
