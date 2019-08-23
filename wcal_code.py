@@ -124,7 +124,11 @@ def wcal(filename, telluric_name):
         wlen = d['Wavelength']
         # Identify and mask bad pixels
         spc = d['Extracted_OPT']
-        spc = cosmic_filter(wlen, spc)
+
+        ### Iterative filtering
+        for i in range(5):
+            spc = median_filter(spc, 128, False)
+            spc = median_filter(spc, 4, True)
         '''
         plt.figure(figsize=(12,3), dpi=120)
         plt.title("Before")

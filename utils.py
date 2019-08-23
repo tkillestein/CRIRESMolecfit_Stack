@@ -11,21 +11,26 @@ def mkdir_safe(dirname):
         os.mkdir(dirname)
 
 
-def cosmic_filter(wav, flx):
+def median_filter(flx, chunk_size, coldpix):
+# Init new spectrum
     newspc = []
     # Chunk size *MUST* be divisor of spectrum length.
-    chunk_size = 16
+    if len(flx) % chunk_size != 0:
+        raise("Chunk size not factor of spectrum length")
 
     for i in range(int(len(wav)/chunk_size)):
         a = i*chunk_size
         b = (i+1)*chunk_size
-        ### Split the spectrum into (chunk_size) pixel chunks
+        ### Split the spectrum into 16 pixel chunks
         subflx = flx[a:b]
         # Compute the median and MAD (robust stdev) for each chunk
         median = np.nanmedian(subflx)
         sigma = median_absolute_deviation(subflx)
         # Pixel more than 5 MAD away from the median get masked
-        cleanmsk = np.logical_or(np.array(subflx) > 5*sigma + median, np.array(subflx) < median - 5*sigma)
+        if coldpix == True:
+            cleanmsk = np.logical_or(np.array(subflx) > 5*sigma + median, np.array(subflx) < median - 7*sigma)
+        else:
+            cleanmsk = np.array(subflx) > 5*sigma + median
         subflx[cleanmsk == True] = 'NaN' #np.median(subflx[cleanmsk == False])
         #print("Threshold: %s, Max: %s" % (2*sigma + median, np.max(subflx)))
         # Rebuild the spectrum chunk by chunk
