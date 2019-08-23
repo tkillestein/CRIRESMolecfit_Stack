@@ -140,7 +140,3 @@ for f in science_files:
     shutil.copy(f, FILEPATH)
 
 print("Download complete!")
-
-
-### Modified version of obs_pairer to produce input files for the pipeline
-"date_target_exp_setnum" # folder structure

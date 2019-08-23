@@ -11,7 +11,7 @@ def grab_calfiles():
     workingdir = os.getcwd()
     handler = Eso()
     handler.ROW_LIMIT = 10000
-    handler.login("tkillestein")
+    handler.login("tkillestein", store_password=True)
 
     def mkdir_safe(dirname):
         '''
@@ -38,7 +38,7 @@ def grab_calfiles():
     prop_ID = header["HIERARCH ESO OBS PROG ID"]
     date = Time(header["DATE-OBS"])
     sci_exp = header["EXPTIME"]
-    stime = date - 12*u.hour
+    stime = date
     etime = date + 12*u.hour
     win_size = header["HIERARCH ESO DET WINDOW NY"]
     sci_wav = header["HIERARCH ESO INS WLEN CWLEN"]
