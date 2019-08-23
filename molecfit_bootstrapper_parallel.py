@@ -37,7 +37,7 @@ def molecfit_run(f):
     wavmask.close()
     wav_path = os.path.join(current_path, "masks/wavmask.txt")
 
-    detchoice = ["1", "2", "3", "4"]
+    detchoice = ["2", "3"]
 
     filename = glob.glob("*.fits")[0]
     file_path = os.path.join(current_path, filename)
