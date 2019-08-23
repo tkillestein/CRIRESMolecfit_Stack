@@ -23,7 +23,7 @@ import sys
 import emcee
 import corner
 from scipy.optimize import minimize
-from utils import cosmic_filter
+from utils import median_filter
 
 def mycc(fVec,gVec):
     N, = fVec.shape
