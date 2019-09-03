@@ -36,3 +36,18 @@ def median_filter(flx, chunk_size, coldpix):
         # Rebuild the spectrum chunk by chunk
         newspc.extend(subflx)
     return np.array(newspc)
+
+def parse_molecfits(fname):
+    hdu = fits.open(fname)
+    data = hdu[1].data
+    hdu.close()
+
+    values = data["value"]
+    errs = data["uncertainty"]
+
+    ch4 = np.float(values[data["parameter"] == "rel_mol_col_ppmv_CH4"])
+    e_ch4 = np.float(errs[data["parameter"] == "rel_mol_col_ppmv_CH4"])
+    h2o = np.float(values[data["parameter"] == "rel_mol_col_ppmv_H2O"])
+    e_h2o = np.float(errs[data["parameter"] == "rel_mol_col_ppmv_H2O"])
+    chisq = np.float(values[data["parameter"] == "reduced_chi2"])
+    return ch4, e_ch4, h2o, e_h2o, chisq
