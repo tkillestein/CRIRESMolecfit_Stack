@@ -32,3 +32,5 @@ Very helpful for speeding up the calibration selector stage, easily swapped by r
 * From the top-level directory run `python process_frames.py`
 * Currently, the calibration frame grabber, pipeline bootstrapper, and wavelength calibration routines run in sequence on each folder, then molecfit runs across N-1 cores.
 
+#### Known issues:
+* In `calibrate_frames.py`, errors thrown by `esorex` will cause the code to crash. To fix: remove all sets that have already processed and remove the troublesome set, then re-run the code.
