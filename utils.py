@@ -1,6 +1,8 @@
 import os, glob
 import numpy as np
 from astropy.stats import median_absolute_deviation
+from astropy.io import fits
+from astropy.time import Time
 
 def mkdir_safe(dirname):
     if os.path.isdir(dirname) == True:
@@ -51,3 +53,13 @@ def parse_molecfits(fname):
     e_h2o = np.float(errs[data["parameter"] == "rel_mol_col_ppmv_H2O"])
     chisq = np.float(values[data["parameter"] == "reduced_chi2"])
     return ch4, e_ch4, h2o, e_h2o, chisq
+
+def parse_fitsheader(frame):
+    hdu  = fits.open(frame)
+    temphead = hdu[0].header
+    hdu.close()
+    obs_times = Time(temphead["DATE-OBS"]).mjd
+    airmass = 0.5*(temphead["HIERARCH ESO TEL AIRM START"] + temphead["HIERARCH ESO TEL AIRM END"])
+    wlen = temphead["HIERARCH ESO INS WLEN CWLEN"]
+    name = temphead["HIERARCH ESO OBS TARG NAME"]
+    return obs_times, airmass, wlen, name
