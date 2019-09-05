@@ -12,15 +12,14 @@ When provided with a set of raw spectra, the code:
 #### molecfit
 Install from <https://www.eso.org/sci/software/pipelines/skytools/molecfit> - GUI isn't required for this code.
 For the scripting to work properly, add the INSTALL_DIR/bin directory to PATH.
-Utility scripts like `results_crawler.py` compatible with a modified molecfit code to give higher precision - contact me for more info.
 
 #### CRIRES Pipeline
 Install from <http://www.eso.org/sci/software/pipelines/> - installing without `esoreflex` and `gasgano` is fine.
-Add the directory containing the `esorex` script to PATH also.
+Add the INSTALL_DIR/bin directory containing the `esorex` script to PATH also.
 
 
 #### Python packages
-`astroquery`, `skycalc-cli`, and `emcee` - install with your preferred method.
+`astroquery`, `skycalc-cli`, `tqdm`, and `emcee` - install with your preferred method.
 
 #### pigz
 Very helpful for speeding up the calibration selector stage, easily swapped by replacing `pigz -d *.Z` with `gzip -d *.Z` in `cal_selector.py`
@@ -31,4 +30,8 @@ Very helpful for speeding up the calibration selector stage, easily swapped by r
 * Inside each observation block directory, put the raw frames to be processed in a subdirectory `obj/`
 * From the top-level directory run `python process_frames.py`
 * Currently, the calibration frame grabber, pipeline bootstrapper, and wavelength calibration routines run in sequence on each folder, then molecfit runs across N-1 cores.
+* Note that each stage of the pipeline requires the previous one to have run successfully, so if the code crashes/fails to run, the next stage of the pipeline likely cannot find what it is looking for. Check the full documentation to find what is missing.
 
+#### Known issues:
+* In `calibrate_frames.py`, errors thrown by `esorex` will cause the code to crash. To fix: remove all sets that have already processed and remove the troublesome set, then re-run the code.
+* molecfit has some sporadic segfaults for certain wavelength ranges. It's unclear why this happens for some datasets and not for others at the same wavelength range, further work needed. For now, tweak the wavelength ranges in `molecfit_bootstrapper_parallel.py`.
