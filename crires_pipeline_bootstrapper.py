@@ -16,6 +16,8 @@ def calibrate_frames():
             return "OBS_NOD"
         if ftype == "SPECTRUM,NODDING,JITTER":
             return "OBS_NOD_JIT"
+        if ftype == "SPECTRUM,DIRECT,OTHER":
+            return "OBS_DIR"
         else:
             raise Exception("Observation type not matched, check FITS header matches tags above.")
 

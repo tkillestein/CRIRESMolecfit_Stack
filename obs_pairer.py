@@ -4,8 +4,8 @@ from astropy.io import fits
 from astropy.table import Table
 from astropy.time import Time
 
-FILEPATH = "/storage/astro2/phugxs/crires_downloads/2012_co2"
-NEWPATH = "/storage/astro2/phugxs/crires_processed/2012_co2"
+FILEPATH = "/storage/astro2/phugxs/crires_downloads/51Peg_20101016"
+NEWPATH = "/storage/astro2/phugxs/crires_processed/51Peg_20101016"
 
 filelist = glob.glob(FILEPATH + "/*.fits")
 
@@ -49,7 +49,8 @@ for u in unique_tgts:
         failstring = len(As) != len(Bs)
 
         if failstring == True:
-            continue
+            print("Fail")
+            #continue
         else:
             for i in range(len(As)):
                 date = Time(As[i]['date'], out_subfmt='date')

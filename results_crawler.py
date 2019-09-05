@@ -19,17 +19,16 @@ wlens = []
 ch4_abun = []
 e_ch4_abun = []
 
-for i in range(len(framelist)):
+for i in range(len(parfilelist)):
     t, X, wlen, name = parse_fitsheader(framelist[i])
     ch4, e_ch4, h2o, e_h2o, chisq = parse_molecfits(parfilelist[i])
-    if chisq < 10:
-        obs_times.append(t)
-        airmass.append(X)
-        chisqs.append(chisq)
-        ch4_abun.append(ch4)
-        e_ch4_abun.append(e_ch4)
+    obs_times.append(t)
+    airmass.append(X)
+    chisqs.append(chisq)
+    ch4_abun.append(ch4)
+    e_ch4_abun.append(e_ch4)
 
-plt.errorbar(obs_times, ch4_abun, e_ch4_abun, fmt='.k')
+plt.errorbar(obs_times[:len(ch4_abun)], ch4_abun, e_ch4_abun, fmt='.k')
 
 #datablock = np.column_stack((obs_times, airmass, CH4_abun, CH4_err, H2O_abun, H2O_err))
 #np.savetxt("20110414_ThetaCrt.txt", datablock)

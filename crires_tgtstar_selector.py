@@ -35,13 +35,12 @@ handler.ROW_LIMIT = 1
 
 crires_cat = Table.read("crires_fulldb.csv")
 ### Select frames within a given time period
-date_init, date_final = (Time("2012-01-01"), Time("2012-12-31"))
+date_init, date_final = (Time("2011-01-01"), Time("2014-12-31"))
 timemask = np.logical_and(crires_cat['DATE OBS'] > date_init, crires_cat['DATE OBS'] < date_final)
 print("Filter by time: %s of %s targets remain" % (np.sum(timemask), len(timemask)))
 
-### Subset of frames between 2 and 2.3 micron
-wavmin, wavmax = (1500, 1600)
-wavmask = np.logical_and(crires_cat['INS WLEN CWLEN'] > wavmin, crires_cat['INS WLEN CWLEN'] < wavmax)
+
+wavmask = np.logical_and(1520 < crires_cat['INS WLEN CWLEN'], crires_cat['INS WLEN CWLEN'] < 1620)
 
 initmask = np.logical_and(wavmask, timemask)
 print("Filter by wavelength: %s of %s targets remain" % (np.sum(initmask), len(initmask)))
@@ -58,13 +57,11 @@ varstat = []
 
 for c in tqdm(cat_subset['Target Ra Dec'], desc="Querying SIMBAD:", ascii=True):
     coord = SkyCoord(c, unit=(u.hourangle, u.deg))
-    results_table = handler.query_region(coord, radius=1*u.arcmin)
+    results_table = handler.query_region(coord, radius=1.5*u.arcmin)
     spectype.append(results_table[0]['MK_Spectral_type'].decode())
     varstat.append(results_table[0]['V__vartyp'])
     #Kmag.append(results_table[0]['FLUX_K'])
     time.sleep(0.3) # Don't remove this - here to comply with SIMBAD rate limit
-
-print(varstat)
 
 ### If it's G K M or otherwise, reject
 
@@ -104,7 +101,7 @@ for head in tqdm(check_calib_list, ascii=True, desc="Checking availability of ca
     date = Time(head["DATE-OBS"])
     sci_exp = head["EXPTIME"]
     stime = date
-    etime = date + 12*u.hour
+    etime = date + 10*u.hour
     win_size = head["HIERARCH ESO DET WINDOW NY"]
     sci_wav = head["HIERARCH ESO INS WLEN CWLEN"]
     #print("Querying ESO Archive")
@@ -130,7 +127,7 @@ if frames_rejected % 2 != 0:
     print("Error - odd number of frames rejected. \n Inspect files before continuing")
 
 
-FILEPATH = "/storage/astro2/phugxs/crires_downloads/2012_co2"
+FILEPATH = "/storage/astro2/phugxs/crires_downloads/co2_finaltry"
 
 mkdir_safe(FILEPATH)
 

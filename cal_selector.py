@@ -30,6 +30,7 @@ def grab_calfiles():
 
     # Read the first FITS in the folder
     filelist = glob.glob("obj/*.fits")
+    print(os.getcwd())
     temphdu = fits.open(filelist[0])
     header = temphdu[0].header
     print("FITS header loaded")
@@ -39,7 +40,7 @@ def grab_calfiles():
     date = Time(header["DATE-OBS"])
     sci_exp = header["EXPTIME"]
     stime = date
-    etime = date + 12*u.hour
+    etime = date + 18*u.hour
     win_size = header["HIERARCH ESO DET WINDOW NY"]
     sci_wav = header["HIERARCH ESO INS WLEN CWLEN"]
     #print(filelist[0], sci_wav, date)

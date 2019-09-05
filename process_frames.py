@@ -11,7 +11,6 @@ from utils import mkdir_safe
 from wcal_code import wcal
 from molecfit_bootstrapper_parallel import molecfit_run
 
-
 BASEPATH = os.getcwd()
 
 folders = glob.glob("raw/*")
@@ -22,8 +21,6 @@ for f in sorted(folders):
     os.chdir(f)
     grab_calfiles()
     calibrate_frames()
-
-    ### Read FITS header from crires_spec_jitter_extracted.FITS
 
     temphdu = fits.open("obj/crires_spec_jitter_extracted.fits")
     header = temphdu[0].header
@@ -40,18 +37,17 @@ for f in sorted(folders):
     os.chdir(BASEPATH)
     print("Folder %s of %s complete" % (sorted(folders).index(f) + 1, len(folders)))
 
-
+'''
 #### Molecfit executed seperately to allow parallel processing - waits til all this is doneself.
 folders = sorted(glob.glob("proc/*"))
 
-
+### drop thread count to avoid locking computer and annoying people
 THREAD_COUNT = cpu_count() - 1
 print("Spawning %s threads" % (THREAD_COUNT))
-### two summer students working on the cluster
-### give them a core each
+
 
 if __name__ == '__main__':
     pool = Pool(THREAD_COUNT)
     pool.map(molecfit_run, folders)
-
 pool.close()
+'''
