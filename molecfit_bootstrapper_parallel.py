@@ -7,6 +7,7 @@ from utils import mkdir_safe
 
 def molecfit_run(f):
     #### f is a directory output by the previous stages of the script
+    parent_path = os.getcwd()
     os.chdir(f)
     current_path = os.getcwd()
 
@@ -90,7 +91,7 @@ def molecfit_run(f):
     outfile_path = os.path.join(current_path, "output/output.par")
     #print(outfile_path)
     print("Starting molecfit call")
-    os.system("cd ~/mod_molecfit && ./bin/molecfit " + str(outfile_path))
+    os.system("molecfit " + str(outfile_path))
 
     #### chdir back to the starting path ready to run again
     os.chdir(parent_path)
