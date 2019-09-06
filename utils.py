@@ -4,13 +4,41 @@ from astropy.stats import median_absolute_deviation
 from astropy.io import fits
 from astropy.time import Time
 
+def return_frame_type(fname):
+    hdu = fits.open(fname)
+    ftype = hdu[0].header["HIERARCH ESO DPR TECH"]
+    if ftype == 'SPECTRUM,NODDING,OTHER' or ftype == 'SPECTRUM,NODDING':
+        return "OBS_NOD"
+    if ftype == "SPECTRUM,NODDING,JITTER":
+        return "OBS_NOD_JIT"
+    if ftype == "SPECTRUM,DIRECT,OTHER":
+        return "OBS_DIR"
+    else:
+        raise Exception("Observation type not matched, check FITS header matches tags above.")
+
 def mkdir_safe(dirname):
+    '''
+    Shorthand for checking if a directory exists, making it if it doesn't,
+    and cleaning it out if it does.
+    '''
     if os.path.isdir(dirname) == True:
         flist = glob.glob(dirname + "/*")
         for f in flist:
             os.remove(f)
     else:
         os.mkdir(dirname)
+
+    def return_frame_type(fname):
+        hdu = fits.open(fname)
+        ftype = hdu[0].header["HIERARCH ESO DPR TECH"]
+        if ftype == 'SPECTRUM,NODDING,OTHER' or ftype == 'SPECTRUM,NODDING':
+            return "OBS_NOD"
+        if ftype == "SPECTRUM,NODDING,JITTER":
+            return "OBS_NOD_JIT"
+        if ftype == "SPECTRUM,DIRECT,OTHER":
+            return "OBS_DIR"
+        else:
+            raise Exception("Observation type not matched, check FITS header matches tags above.")
 
 
 def median_filter(flx, chunk_size, coldpix):
@@ -40,6 +68,12 @@ def median_filter(flx, chunk_size, coldpix):
     return np.array(newspc)
 
 def parse_molecfits(fname):
+    '''
+    Parses the molecfit parameter FITS files. It turns out all along these were
+    at full precision, so hacking the code wasn't necessary!
+    Can extend this to include CO2 and any other molecules/parameters by
+    adding more variables below.
+    '''
     hdu = fits.open(fname)
     data = hdu[1].data
     hdu.close()
