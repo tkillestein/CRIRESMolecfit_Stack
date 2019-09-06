@@ -37,7 +37,6 @@ for f in sorted(folders):
     os.chdir(BASEPATH)
     print("Folder %s of %s complete" % (sorted(folders).index(f) + 1, len(folders)))
 
-'''
 #### Molecfit executed seperately to allow parallel processing - waits til all this is doneself.
 folders = sorted(glob.glob("proc/*"))
 
@@ -50,4 +49,3 @@ if __name__ == '__main__':
     pool = Pool(THREAD_COUNT)
     pool.map(molecfit_run, folders)
 pool.close()
-'''

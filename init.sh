@@ -3,7 +3,7 @@
 
 echo "Setting up directory structure"
 mkdir -p calfiles
-mkdir -p raw/obj
+mkdir -p raw/example_set/obj
 mkdir -p proc
 
 echo "Grabbing calibration files"
