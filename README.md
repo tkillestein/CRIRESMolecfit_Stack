@@ -23,7 +23,8 @@ Add the INSTALL_DIR/bin directory containing the `esorex` script to PATH also.
 Currently the code uses `pigz` for marginal improvements in speed when decompressing. If you don't have it, see `cal_selector.py`  for code to swap to `gzip`.
 
 ### Install:
-* The setup script included
+* The setup script included will grab the necessary calfiles, as well as set up the directory structure
+* In the code for `cal_selector.py`, set your username. On first run, the keychain will request to store your password. After first run, you shouldn't be prompted again.
 
 ### Running the code:
 * Under `raw/`, create a folder for each observation block - each block should be same exposure time, wavelength
