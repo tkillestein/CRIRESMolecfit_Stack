@@ -5,18 +5,12 @@ import time
 import numpy as np
 from utils import mkdir_safe
 
-proc_path = "20110414_proc"
-
-folders = sorted(glob.glob(proc_path + "/*"))
-#print(folders)
-
-parent_path = os.getcwd()
-
 def molecfit_run(f):
     #### f is a directory output by the previous stages of the script
     os.chdir(f)
     current_path = os.getcwd()
 
+    #### make dirs for file structure
     mkdir_safe("output")
     mkdir_safe("masks")
 
@@ -37,6 +31,8 @@ def molecfit_run(f):
     wavmask.close()
     wav_path = os.path.join(current_path, "masks/wavmask.txt")
 
+    #### Choose detectors to fit here - some combo of "1", "2", "3", "4"
+    #### Although it doesn't matter, for consistency write in increasing order.
     detchoice = ["2", "3"]
 
     filename = glob.glob("*.fits")[0]
@@ -70,7 +66,6 @@ def molecfit_run(f):
 
     fitmask.close()
     frame.close()
-
 
     #### Read in the template file
     template = open(os.path.join(parent_path, "template.par"), "r")

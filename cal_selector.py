@@ -39,6 +39,8 @@ def grab_calfiles():
     prop_ID = header["HIERARCH ESO OBS PROG ID"]
     date = Time(header["DATE-OBS"])
     sci_exp = header["EXPTIME"]
+    # Set start and end time of search - may need to tweak this manually to find the right calfiles.
+    # Best to be generous with this window since need to find flats, darks, and flat-darks for the pipeline to run.
     stime = date
     etime = date + 18*u.hour
     win_size = header["HIERARCH ESO DET WINDOW NY"]
@@ -83,7 +85,15 @@ def grab_calfiles():
 
     print("Unpacking and moving!")
 
-    ### Unpack all the files -- swap pigz for gzip if you don't have it.
+    ### Unpack all the files -- several possible commands for thisself.
+
+    ### maximum compatibility use "gzip -d *.Z"
+    ### pigz is a parallel gzip, but also it can't decompress in parallel apparently.
+    ### if you want to use it despite this, "pigz -d *.Z"
+
+    ### For maximum SPEED you could try "ls *.Z | parallel pigz -d" if you have GNU parallel installed.
+
+
     os.chdir("flats")
     os.system("pigz -d *.Z")
 

@@ -3,7 +3,6 @@ from astropy.io import fits
 import numpy as np
 
 def grab_tellurics(fitsheader):
-
     #### make skycalc_temp directory
     if os.path.isdir("skycalc_temp") == True:
         flist = glob.glob("skycalc_temp/*")
@@ -11,7 +10,6 @@ def grab_tellurics(fitsheader):
             os.remove(f)
     else:
         os.mkdir("skycalc_temp")
-
 
     ### Read in key parameters from ESO fits files
     ### almanac, need ra, dec, observatory, timestamp
@@ -32,5 +30,6 @@ def grab_tellurics(fitsheader):
     sk_input.write("airmass : %s \n" % (airm))
     sk_input.close()
 
+    ### Run the call to Skycalc CLI, outputting the telluric spectrum in the current dir.
     cmd = "skycalc_cli" + " -o telluric_model.fits" + " -i skycalc_temp/input_skycalc.txt"
     os.system(cmd)

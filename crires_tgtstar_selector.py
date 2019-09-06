@@ -15,6 +15,8 @@ from tqdm import tqdm
 from astropy.io import fits, ascii
 import os, glob, shutil
 
+### Set the download path below.
+FILEPATH = "/storage/astro2/phugxs/crires_downloads/co2_finaltry"
 
 def mkdir_safe(dirname):
     '''
@@ -125,9 +127,6 @@ for head in tqdm(check_calib_list, ascii=True, desc="Checking availability of ca
 
 if frames_rejected % 2 != 0:
     print("Error - odd number of frames rejected. \n Inspect files before continuing")
-
-
-FILEPATH = "/storage/astro2/phugxs/crires_downloads/co2_finaltry"
 
 mkdir_safe(FILEPATH)
 

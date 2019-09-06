@@ -125,7 +125,7 @@ def wcal(filename, telluric_name):
         # Identify and mask bad pixels
         spc = d['Extracted_OPT']
 
-        ### Iterative filtering
+        ### Two-step filtering to attempt to clean the bad pixels out.
         for i in range(5):
             spc = median_filter(spc, 128, False)
             spc = median_filter(spc, 4, True)
@@ -142,6 +142,10 @@ def wcal(filename, telluric_name):
         l3 = wlen[x3]
         pars = (l1,l2,l3)
         deltas = (1E-3,1E-3,1E-3)
+
+        ### Before feeding to MCMC we do a grid search around the initial params,
+        ### which helps the MCMC converge properly. This takes about as long as
+        ### one of the MCMC chunks below, so it's a good tradeoff.
 
         print("Initialise grid search")
         dim1 = np.linspace(l1 - 0.25, l1 + 0.25, 30)
@@ -160,7 +164,11 @@ def wcal(filename, telluric_name):
 
         pars = (dim1[i], dim2[j], dim3[k])
 
-        print("MCMC running: init")
+        print("MCMC running")
+
+        ### Here we run a short set of MCMC chains, really refining the solution
+        ### produced by the grid search.
+
         for i in range(3):
             ll1, ll2, ll3 = run_emcee(pars,deltas,cs_tell,spc,plot=False)
             pars = ll1, ll2, ll3
@@ -177,6 +185,7 @@ def wcal(filename, telluric_name):
         plt.xlim(wlen[0], wlen[-1])
         plt.show()
         '''
+    ### Write out our updated spectra to a new file.
     out_file = filename[:-5] + "_proc.fits"
     hdul.writeto(out_file,overwrite=True)
     return
