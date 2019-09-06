@@ -4,8 +4,8 @@ from astropy.io import fits
 from astropy.table import Table
 from astropy.time import Time
 
-FILEPATH = "/storage/astro2/phugxs/crires_downloads/TauBoo_20110415"
-NEWPATH = "/storage/astro2/phugxs/crires_processed/TauBoo_20110415"
+FILEPATH = ""
+NEWPATH = ""
 
 filelist = glob.glob(FILEPATH + "/*.fits")
 
