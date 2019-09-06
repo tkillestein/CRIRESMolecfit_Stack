@@ -8,24 +8,24 @@ When provided with a set of raw spectra, the code:
 * Creates input files for and runs `molecfit` to determine column densities of greenhouse gases.
 
 ### Dependencies:
-
-#### molecfit
+##### molecfit
 Install from <https://www.eso.org/sci/software/pipelines/skytools/molecfit> - GUI isn't required for this code.
 For the scripting to work properly, add the INSTALL_DIR/bin directory to PATH.
 
-#### CRIRES Pipeline
+##### CRIRES Pipeline
 Install from <http://www.eso.org/sci/software/pipelines/> - installing without `esoreflex` and `gasgano` is fine.
 Add the INSTALL_DIR/bin directory containing the `esorex` script to PATH also.
 
-
-#### Python packages
+##### Python packages
 `astroquery`, `skycalc-cli`, `tqdm`, and `emcee` - install with your preferred method.
 
-#### pigz
+##### pigz
 Currently the code uses `pigz` for marginal improvements in speed when decompressing. If you don't have it, see `cal_selector.py`  for code to swap to `gzip`.
 
-### Running the code:
+### Install:
+* The setup script included
 
+### Running the code:
 * Under `raw/`, create a folder for each observation block - each block should be same exposure time, wavelength
 * Inside each observation block directory, put the raw frames to be processed in a subdirectory `obj/`
 * From the top-level directory run `python process_frames.py`
