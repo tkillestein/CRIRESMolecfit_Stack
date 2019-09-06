@@ -20,7 +20,7 @@ Add the INSTALL_DIR/bin directory containing the `esorex` executable to PATH als
 `astroquery`, `skycalc-cli`, `tqdm`, and `emcee` - install with your preferred method.
 
 ##### pigz
-Currently the code uses `pigz` for marginal improvements in speed when decompressing. If you don't have it, see `cal_selector.py`  for code to swap to `gzip`.
+Currently the code uses `pigz` for marginal improvements in speed when decompressing. If you don't have it/want to use it, see `cal_selector.py`  for code to swap to `gzip`.
 
 ### Install:
 * The setup script included will grab the necessary calfiles, as well as set up the directory structure
