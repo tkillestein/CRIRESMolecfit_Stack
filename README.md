@@ -23,7 +23,7 @@ Add the INSTALL_DIR/bin directory containing the `esorex` executable to PATH als
 Currently the code uses `pigz` for marginal improvements in speed when decompressing. If you don't have it/want to use it, see `cal_selector.py`  for code to swap to `gzip`.
 
 ### Install:
-* The setup script included will grab the necessary calfiles, as well as set up the directory structure
+* The setup script included will grab the necessary calfiles, as well as set up the directory structure, dropping an example of how to format your input in /raw.
 * In the code for `cal_selector.py`, set your username. On first run, the keychain will request to store your password. After first run, you shouldn't be prompted again.
 
 ### Running the code:
