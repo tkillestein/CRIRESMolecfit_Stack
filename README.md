@@ -22,7 +22,7 @@ Add the INSTALL_DIR/bin directory containing the `esorex` script to PATH also.
 `astroquery`, `skycalc-cli`, `tqdm`, and `emcee` - install with your preferred method.
 
 #### pigz
-Very helpful for speeding up the calibration selector stage, easily swapped by replacing `pigz -d *.Z` with `gzip -d *.Z` in `cal_selector.py`
+Currently the code uses `pigz` for marginal improvements in speed when decompressing. If you don't have it, see `cal_selector.py`  for code to swap to `gzip`.
 
 ### Running the code:
 
