@@ -16,7 +16,7 @@ from astropy.io import fits, ascii
 import os, glob, shutil
 
 ### Set the download path below.
-FILEPATH = "/storage/astro2/phugxs/crires_downloads/co2_finaltry"
+FILEPATH = ""
 
 def mkdir_safe(dirname):
     '''
