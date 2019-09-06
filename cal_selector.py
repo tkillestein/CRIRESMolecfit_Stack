@@ -10,8 +10,12 @@ import astropy.units as u
 def grab_calfiles():
     workingdir = os.getcwd()
     handler = Eso()
+
+    ### Set your username here!
+    USERNAME = ""
+
     handler.ROW_LIMIT = 10000
-    handler.login("tkillestein", store_password=True)
+    handler.login(USERNAME, store_password=True)
 
     def mkdir_safe(dirname):
         '''
