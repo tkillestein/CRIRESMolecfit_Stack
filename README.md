@@ -1,4 +1,4 @@
-# CRIRES/Molecfit Stack
+# CRIRES/Molecfit Stack V1.0
 
 Code to automatically process and fit CRIRES spectra of telluric standard stars.
 When provided with a set of raw spectra, the code:
