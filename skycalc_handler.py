@@ -16,7 +16,7 @@ def grab_tellurics(fitsheader):
     ra = fitsheader["RA"]
     dec = fitsheader["DEC"]
     date = fitsheader["DATE"]
-    airm = 0.5*(fitsheader["HIERARCH ESO TEL AIRM END"] + fitsheader["HIERARCH ESO TEL AIRM END"])
+    airm = 0.5*(fitsheader["HIERARCH ESO TEL AIRM START"] + fitsheader["HIERARCH ESO TEL AIRM END"])
     wmin = fitsheader["HIERARCH ESO INS WLEN STRT1"] - 5 # 5 nm buffer to allow for jitter.
     wmax = fitsheader["HIERARCH ESO INS WLEN END4"] + 5
     res = 0.005
